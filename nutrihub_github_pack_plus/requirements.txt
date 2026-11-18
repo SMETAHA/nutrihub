@@ -1,0 +1,12 @@
+Django==5.2.7
+Pillow
+reportlab
+python-dotenv
+django-environ
+whitenoise
+gunicorn
+black
+isort
+ruff
+pytest
+pytest-django

@@ -1,0 +1,219 @@
+/* ========= diary.css (light/dark by CSS variables) ========= */
+
+/* Небольшие алиасы, чтобы удобнее было писать */
+:root{
+  --card: var(--bg-secondary, #f4f5f7);
+  --surface: var(--bg, #ffffff);
+  --text-weak: var(--text-muted, #6b7280);
+  --ring: var(--accent, #3b82f6);
+  --ring-weak: color-mix(in oklab, var(--accent) 20%, transparent);
+}
+
+/* ---------- КАЛЕНДАРЬ АРХИВА ---------- */
+.calendar-wrap{
+  margin-top: 12px;
+}
+
+.calendar-toolbar{
+  display:flex; align-items:center; gap:8px; justify-content:flex-end;
+  margin-bottom: 10px;
+}
+.calendar-btn{
+  border:1px solid var(--border); background: var(--card); color:var(--text);
+  padding:8px 10px; border-radius:12px; cursor:pointer;
+}
+.calendar-btn:hover{ background: color-mix(in oklab, var(--card) 80%, var(--text) 6%); }
+
+.calendar{
+  background: var(--surface);
+  border:1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 6px 20px color-mix(in oklab, black 8%, transparent);
+}
+
+.calendar .month-title{
+  font-weight: 700; font-size: 1.05rem; color: var(--text);
+  text-align:center; margin: 2px 0 12px;
+}
+
+.calendar .week-head{
+  display:grid; grid-template-columns: repeat(7, 1fr); gap: 10px;
+  color: var(--text-weak); font-weight: 600; padding: 0 4px 6px;
+}
+
+.calendar .grid{
+  display:grid; grid-template-columns: repeat(7, 1fr); gap: 10px;
+}
+
+.calendar .day{
+  display:flex; align-items:flex-start; justify-content:flex-start;
+  padding: 10px; min-height: 76px;
+  border:1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--text);
+  position: relative;
+  transition: transform .1s ease, background .15s ease, border-color .15s ease;
+}
+
+.calendar .day:hover{
+  background: color-mix(in oklab, var(--card) 85%, var(--text) 6%);
+  border-color: color-mix(in oklab, var(--border) 70%, var(--accent) 30%);
+}
+
+.calendar .day .num{
+  font-weight: 700; opacity: .9;
+}
+
+.calendar .day.is-other{
+  opacity: .55;
+}
+
+.calendar .day.is-today{
+  outline: 0;
+  box-shadow: 0 0 0 3px var(--ring-weak) inset;
+  border-color: var(--ring);
+}
+
+.calendar .day.is-selected{
+  background: color-mix(in oklab, var(--accent) 12%, var(--card));
+  border-color: var(--accent);
+}
+
+.calendar .day.has-data::after{
+  content:"";
+  position:absolute; right:10px; bottom:10px;
+  width: 8px; height: 8px; border-radius:999px;
+  background: var(--accent);
+}
+
+/* ---------- ТАБЛИЦА ЗА ДЕНЬ ---------- */
+.diary-table-container{ margin-top: 16px; overflow-x:auto; }
+
+.diary-table{
+  width:100%; border-collapse: collapse;
+  background: var(--card);
+  border:1px solid var(--border);
+  border-radius: 14px; overflow:hidden;
+  box-shadow: 0 6px 20px color-mix(in oklab, black 8%, transparent);
+  font-size: .95rem;
+}
+
+.diary-table th, .diary-table td{
+  padding: 12px 14px; text-align: center; border-bottom:1px solid var(--border);
+  color: var(--text);
+}
+
+.diary-table thead th{
+  background: color-mix(in oklab, var(--surface) 75%, transparent);
+  color: var(--text-weak); font-weight:700; text-transform:none;
+}
+
+.diary-table tbody tr:hover td{
+  background: color-mix(in oklab, var(--text) 6%, transparent);
+}
+
+.totals-row td{
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+  border-top:1px solid var(--border);
+  font-weight: 800;
+}
+
+/* Кнопки действий в таблице */
+.actions{ display:flex; gap:8px; justify-content:center; }
+.btn-edit, .btn-delete{
+  border:1px solid var(--border); background: var(--surface); color:var(--text);
+  width:34px; height:34px; border-radius:10px; cursor:pointer;
+  display:grid; place-items:center;
+  transition: border-color .15s ease, background .15s ease, transform .1s ease;
+}
+.btn-edit:hover{ border-color: var(--accent); background: color-mix(in oklab, var(--accent) 18%, transparent); }
+.btn-delete:hover{ border-color:#e74c3c; background: color-mix(in oklab, #e74c3c 18%, transparent); }
+.btn-edit:active, .btn-delete:active{ transform: scale(.97); }
+
+/* ---------- МОДАЛЬНОЕ ОКНО ---------- */
+.modal{
+  position: fixed; inset:0; z-index: 200;
+  background: color-mix(in oklab, black 45%, transparent);
+  display:flex; align-items:center; justify-content:center;
+}
+.modal.hidden{ display:none; }
+
+.modal-content{
+  width:min(680px, 92vw);
+  background: var(--card); color: var(--text);
+  border:1px solid var(--border); border-radius:16px;
+  padding: 16px; box-shadow: 0 20px 60px color-mix(in oklab, black 35%, transparent);
+}
+.modal-content h3{ margin: 4px 0 12px; text-align:center; }
+
+/* поля в модалке */
+.modal-content label{ display:block; margin:8px 0 4px; color: var(--text-weak); }
+.modal-content input{
+  width:100%; padding:10px 12px; border-radius: 12px;
+  background: var(--surface); color:var(--text);
+  border:1px solid var(--border);
+  outline:0; transition: box-shadow .15s ease, border-color .15s ease;
+}
+.modal-content input:focus{
+  border-color: var(--ring);
+  box-shadow: 0 0 0 4px var(--ring-weak);
+}
+
+.modal .actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:12px; }
+
+.btn-primary{
+  background: var(--accent); color:#fff; border:none; border-radius:12px; padding:10px 14px; cursor:pointer;
+}
+.btn-primary:hover{ filter: brightness(.96); }
+.btn-cancel{
+  background: var(--surface); color: var(--text); border:1px solid var(--border);
+  border-radius:12px; padding:10px 14px; cursor:pointer;
+}
+.btn-cancel:hover{ background: color-mix(in oklab, var(--surface) 80%, var(--text) 6%); }
+
+/* ---------- МЕЛОЧИ ---------- */
+/* Плавный фокус для кликабельных элементов — хорошо виден в тёмной теме */
+.calendar-btn:focus,
+.btn-edit:focus, .btn-delete:focus,
+.modal-content input:focus{
+  outline:none;
+}
+
+/* Если где-то остались нативные <button> или <a class="btn"> */
+.btn{ border:1px solid var(--border); background: var(--surface); color:var(--text);
+      padding:10px 14px; border-radius: 12px; cursor:pointer; }
+.btn:hover{ background: color-mix(in oklab, var(--surface) 80%, var(--text) 6%); }
+
+
+
+.plan-table {
+  margin-top: 1rem;
+}
+.plan-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.plan-table th, .plan-table td {
+  padding: 8px 10px;
+}
+.transfer-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.transfer-btn:hover {
+  background: color-mix(in oklab, var(--accent) 80%, black 20%);
+}
+tr.transferred {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+
+

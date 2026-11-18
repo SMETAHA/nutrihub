@@ -1,0 +1,70 @@
+<div id="planner-modal" class="modal hidden">
+  <div class="modal-content">
+    <h3>➕ Добавить приём</h3>
+    <form method="post" action="{% url 'planner_add' %}">
+      {% csrf_token %}
+      <label>Дата</label>
+      <input type="date" name="date" value="{{ day|date:'Y-m-d' }}" required>
+
+      <label>Время</label>
+      <input type="time" name="time" value="12:00" required>
+
+      <label>Тип приёма</label>
+      <select name="meal_type" required>
+        <option value="breakfast">Завтрак</option>
+        <option value="lunch">Обед</option>
+        <option value="dinner">Ужин</option>
+        <option value="snack">Перекус</option>
+      </select>
+
+      <label>Категория</label>
+      <select name="category" id="planner-cat">
+        <option value="product">Продукт</option>
+        <option value="recipe">Блюдо</option>
+      </select>
+
+      <label>Выбор элемента</label>
+      <select name="item_id" id="planner-item">
+        <optgroup label="Продукты" id="planner-products">
+          {% for p in products %}
+            <option value="{{ p.id }}" data-type="product">{{ p.name }}</option>
+          {% endfor %}
+        </optgroup>
+        <optgroup label="Рецепты" id="planner-recipes" style="display:none;">
+          {% for r in recipes %}
+            <option value="{{ r.id }}" data-type="recipe">{{ r.name }}</option>
+          {% endfor %}
+        </optgroup>
+      </select>
+
+      <label>Вес (г)</label>
+      <input type="number" name="grams" min="0">
+
+      <label>Порций</label>
+      <input type="number" name="servings" min="0" step="0.1">
+
+      <label>Заметка</label>
+      <input type="text" name="note">
+
+      <div class="actions">
+        <button type="submit" class="btn pill">Сохранить</button>
+        <button type="button" class="btn-cancel" onclick="document.getElementById('planner-modal').classList.add('hidden')">Отмена</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const catSel = document.getElementById('planner-cat');
+const prods = document.getElementById('planner-products');
+const recps = document.getElementById('planner-recipes');
+catSel.addEventListener('change', () => {
+  if (catSel.value === 'product') {
+    prods.style.display = 'block';
+    recps.style.display = 'none';
+  } else {
+    prods.style.display = 'none';
+    recps.style.display = 'block';
+  }
+});
+</script>

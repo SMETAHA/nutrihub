@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Добавить продукт{% endblock %}
+{% block content %}
+<div class="form-container">
+  <h1>🧺 Добавить продукт</h1>
+
+  <form method="post" class="form-grid">
+    {% csrf_token %}
+    <label>Название <input type="text" name="name" required></label>
+    <label>Бренд <input type="text" name="brand"></label>
+    <label>Ккал/100г <input type="number" step="0.1" name="calories_per_100g"></label>
+    <label>Белки (г) <input type="number" step="0.1" name="protein_per_100g"></label>
+    <label>Жиры (г) <input type="number" step="0.1" name="fat_per_100g"></label>
+    <label>Углеводы (г) <input type="number" step="0.1" name="carbs_per_100g"></label>
+    <label>Клетчатка (г) <input type="number" step="0.1" name="fiber_per_100g"></label>
+    <label>Сахар (г) <input type="number" step="0.1" name="sugar_per_100g"></label>
+    <label>Натрий (мг) <input type="number" step="0.1" name="sodium_mg_per_100g"></label>
+    <label>Калий (мг) <input type="number" step="0.1" name="potassium_mg_per_100g"></label>
+    <label>Теги (через запятую) <input type="text" name="tags"></label>
+
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Сохранить</button>
+      <a href="{% url 'product_list' %}" class="btn btn-secondary">Отмена</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

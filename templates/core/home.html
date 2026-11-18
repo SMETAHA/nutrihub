@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Следи за питанием. Достигай цели. Вдохновляй друзей.</h1>
+  <p>Минималистичный и мощный трекер калорий с социальной лентой.</p>
+  <div class="cta">
+    {% if user.is_authenticated %}
+      <a class="btn btn-primary" href="/dashboard/">Перейти в кабинет</a>
+    {% else %}
+      <a class="btn btn-primary" href="/accounts/register/">Начать бесплатно</a>
+      <a class="btn" href="/accounts/login/">У меня уже есть аккаунт</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="features">
+  <div class="card">📈 Графики прогресса</div>
+  <div class="card">🧮 Авто‑расчёты TDEE/BMR</div>
+  <div class="card">🧺 База продуктов и рецептов</div>
+  <div class="card">🤝 Друзья и реакции</div>
+</section>
+{% endblock %}

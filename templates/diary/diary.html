@@ -1,0 +1,81 @@
+<button class="btn" id="exportBtn">📤 Экспортировать</button>
+
+<div id="exportModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>📅 Экспорт дневника</h3>
+    <label>Выберите дату:</label>
+    <input type="date" id="exportDate" value="{{ day }}">
+
+    <div class="actions">
+      <a id="exportCSV" class="btn">CSV</a>
+      <a id="exportPDF" class="btn">PDF</a>
+      <a id="exportMD" class="btn">Markdown</a>
+    </div>
+
+    <hr>
+    <label>Или экспорт за месяц:</label>
+    <input type="month" id="exportMonth">
+    <div class="actions">
+      <a id="exportMonthCSV" class="btn">CSV</a>
+      <a id="exportMonthPDF" class="btn">PDF</a>
+    </div>
+
+    <button class="btn-cancel" id="closeExportModal">Закрыть</button>
+  </div>
+</div>
+
+<script>
+  const modal = document.getElementById("exportModal");
+  const btn = document.getElementById("exportBtn");
+  const close = document.getElementById("closeExportModal");
+
+  const dateInp = document.getElementById("exportDate");
+  const monthInp = document.getElementById("exportMonth");
+
+  btn.addEventListener("click", () => modal.classList.remove("hidden"));
+  close.addEventListener("click", () => modal.classList.add("hidden"));
+
+  document.getElementById("exportCSV").onclick = () => window.location = `/diary/export/day/${dateInp.value}/csv/`;
+  document.getElementById("exportPDF").onclick = () => window.location = `/diary/export/day/${dateInp.value}/pdf/`;
+  document.getElementById("exportMD").onclick = () => window.location = `/diary/export/day/${dateInp.value}/md/`;
+
+  document.getElementById("exportMonthCSV").onclick = () => {
+    const [y, m] = monthInp.value.split("-");
+    window.location = `/diary/export/month/${y}/${m}/csv/`;
+  };
+  document.getElementById("exportMonthPDF").onclick = () => {
+    const [y, m] = monthInp.value.split("-");
+    window.location = `/diary/export/month/${y}/${m}/pdf/`;
+  };
+
+  document.addEventListener('click', (e) => {
+  // Удаление записи
+  if (e.target.classList.contains('js-diary-delete')) {
+    const id = e.target.dataset.id;
+    const url = e.target.dataset.url;
+    fetch(url, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') }
+    }).then(res => {
+      if (res.ok) {
+        e.target.closest('tr').remove();
+      }
+    });
+  }
+
+  // 📌 Перенос плана в запись
+  if (e.target.classList.contains('js-planner-transfer')) {
+    const id = e.target.dataset.id;
+    const url = e.target.dataset.url;
+    fetch(url, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') }
+    }).then(res => {
+      if (res.ok) {
+        e.target.closest('tr').classList.add('transferred');
+        setTimeout(() => e.target.closest('tr').remove(), 300);
+      }
+    });
+  }
+});
+</script>

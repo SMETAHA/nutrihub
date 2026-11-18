@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Редактирование{% endblock %}
+{% block content %}
+<h2>Рецепт: {{ recipe.title }}</h2>
+<div class="cards-grid">
+  <div class="card">
+    <h3>Параметры</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn">Сохранить</button>
+    </form>
+    <p class="mt">Итого: {{ recipe.totals.kcal }} ккал · Б {{ recipe.totals.p }} · Ж {{ recipe.totals.f }} · У {{ recipe.totals.c }}</p>
+    <p>На порцию: {{ recipe.per_serving.kcal }} ккал</p>
+  </div>
+  <div class="card">
+    <h3>Ингредиенты</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ ing_form.as_p }}
+      <button class="btn">Добавить</button>
+      <input type="hidden" name="add_ing" value="1">
+    </form>
+    <ul class="mt">
+      {% for i in recipe.ingredients.all %}
+        <li>{{ i.product.name }} — {{ i.grams }} г</li>
+      {% empty %}
+        <li>Пока пусто.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

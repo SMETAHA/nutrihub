@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Рецепт{% endblock %}
+
+{% block content %}
+<h1>Новый рецепт</h1>
+
+<form method="post" enctype="multipart/form-data" id="recipe-form">
+  {% csrf_token %}
+  {{ form.as_p }}
+
+  <!-- Скрытое поле с JSON ингредиентов -->
+  <input type="hidden" name="ingredients_json" id="ingredients_json" value='{{ ingredients_json|safe }}'>
+
+  <h3>Ингредиенты</h3>
+  <div id="ingredient-list"></div>
+
+  <div>
+    <input type="text" id="product-search" placeholder="Введите продукт...">
+    <div id="product-results"></div>
+    <input type="number" id="product-amount" placeholder="Количество">
+    <select id="product-unit">
+      <option value="g">г</option>
+      <option value="ml">мл</option>
+      <option value="pcs">шт</option>
+    </select>
+    <input type="number" id="product-piece" placeholder="Вес 1 шт (г)" style="display:none;">
+    <button type="button" id="add-ingredient">Добавить</button>
+  </div>
+
+  <hr>
+  <div>
+    <p>Итого: <span id="total-kcal">0</span> ккал</p>
+  </div>
+
+  <button type="submit">💾 Сохранить</button>
+</form>
+
+<script src="{% static 'js/recipes_new.js' %}"></script>
+{% endblock %}

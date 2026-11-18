@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Продукты{% endblock %}
+
+{% block content %}
+<h1 class="page-title">🥗 Продукты</h1>
+
+<div class="product-controls">
+  <form method="get" class="search-bar">
+    <input type="text" name="q" placeholder="🔍 Найти продукт..." value="{{ query }}">
+    <select name="tag">
+      <option value="">Все категории</option>
+      {% for t in tags %}
+        <option value="{{ t }}" {% if selected_tag == t %}selected{% endif %}>{{ t|title }}</option>
+      {% endfor %}
+    </select>
+    <select name="sort">
+      <option value="">Без сортировки</option>
+      <option value="calories" {% if sort_by == 'calories' %}selected{% endif %}>Ккал 🔥</option>
+      <option value="protein" {% if sort_by == 'protein' %}selected{% endif %}>Белки 🥩</option>
+      <option value="fat" {% if sort_by == 'fat' %}selected{% endif %}>Жиры 🧈</option>
+      <option value="carbs" {% if sort_by == 'carbs' %}selected{% endif %}>Углеводы 🍞</option>
+    </select>
+    <button class="btn btn-primary">Найти</button>
+    <a href="{% url 'add_product' %}" class="btn btn-secondary">+ Добавить</a>
+  </form>
+</div>
+
+<div class="product-table">
+  <table>
+    <thead>
+      <tr>
+        <th>Название</th>
+        <th>Ккал/100г</th>
+        <th>Б</th>
+        <th>Ж</th>
+        <th>У</th>
+        <th>Теги</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td class="name-cell">
+          <span class="name">{{ p.name }}</span>
+          {% if p.brand %}<small class="brand">{{ p.brand }}</small>{% endif %}
+        </td>
+        <td>{{ p.calories_per_100g|floatformat:1 }}</td>
+        <td>{{ p.protein_per_100g|floatformat:1 }}</td>
+        <td>{{ p.fat_per_100g|floatformat:1 }}</td>
+        <td>{{ p.carbs_per_100g|floatformat:1 }}</td>
+        <td><span class="tag">{{ p.tags }}</span></td>
+        <td>
+          <button class="add-btn" data-id="{{ p.id }}">➕</button>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="empty">Ничего не найдено</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+document.querySelectorAll('.add-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    alert(`Продукт #${btn.dataset.id} добавлен 📥`);
+  });
+});
+</script>
+{% endblock %}

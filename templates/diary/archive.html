@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load diary_extras %}
+
+{% block title %}Архив дневника{% endblock %}
+{% block content %}
+
+<h2>🍽️ Архив дневника — {{ month_name }} {{ year }}</h2>
+
+<!-- 📤 Блок экспорта месяца -->
+<div class="export-actions">
+  <a href="{% url 'export_month_csv' year month %}" class="btn small">📤 Экспорт месяца (CSV)</a>
+  <a href="{% url 'export_month_pdf' year month %}" class="btn small">PDF</a>
+</div>
+
+<div class="calendar-nav">
+  <a href="?month={{ month|add:-1 }}&year={{ year }}">←</a>
+  <span>{{ month_name }} {{ year }}</span>
+  <a href="?month={{ month|add:1 }}&year={{ year }}">→</a>
+</div>
+
+<div class="calendar-grid">
+  <div class="calendar-header">Пн</div>
+  <div class="calendar-header">Вт</div>
+  <div class="calendar-header">Ср</div>
+  <div class="calendar-header">Чт</div>
+  <div class="calendar-header">Пт</div>
+  <div class="calendar-header">Сб</div>
+  <div class="calendar-header">Вс</div>
+
+  {% for day in month_days %}
+    <div class="calendar-cell {% if day == today %}today{% endif %} {% if day.month != month %}dimmed{% endif %}"
+         data-date="{{ day|date:'Y-m-d' }}">
+      <div class="day-number">{{ day.day }}</div>
+      {% if entries_by_day.day %}
+        <div class="day-kcal">{{ entries_by_day.day }} ккал</div>
+      {% else %}
+        {% if entries_by_day|get_item:day %}
+        <div class="day-kcal">{{ entries_by_day|get_item:day|floatformat:0 }} ккал</div>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% if planned_meals %}
+<div class="card mt">
+  <h3>🧭 Запланировано на {{ day|date:"d E Y" }}</h3>
+  <ul>
+    {% for pm in planned_meals %}
+      <li>
+        {{ pm.time|time:"H:i" }} — {{ pm.item_name }} ({{ pm.kcal|floatformat:0 }} ккал)
+        <button class="btn-complete" data-id="{{ pm.id }}">✅</button>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+
+
+<!-- 🪄 Модальное окно для информации о дне -->
+<div id="dayModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3 id="modal-date"></h3>
+    <div id="modal-content-body">
+      Загрузка...
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.calendar-cell').forEach(cell => {
+  cell.addEventListener('click', () => {
+    const date = cell.dataset.date;
+    fetch(`/diary/day/${date}/`)
+      .then(r => r.text())
+      .then(html => {
+        document.getElementById('modal-date').innerText = date;
+        document.getElementById('modal-content-body').innerHTML = html;
+        document.getElementById('dayModal').style.display = 'block';
+      });
+  });
+});
+
+document.querySelector('#dayModal .close').addEventListener('click', () => {
+  document.getElementById('dayModal').style.display = 'none';
+});
+</script>
+    <script>
+  // Загружает день в модалку
+  function loadDay(iso) {
+    fetch(`/diary/day/${iso}/`)
+      .then(r => r.text())
+      .then(html => {
+        document.getElementById('modal-date').textContent = iso;
+        const body = document.getElementById('modal-content-body');
+        body.innerHTML = html;
+        document.getElementById('dayModal').style.display = 'block';
+        wireDayModal(); // важно: перевязать обработчики после замены HTML
+      });
+  }
+
+  // Навешиваем обработчики для текущего содержимого модалки
+  function wireDayModal() {
+    const body = document.getElementById('modal-content-body');
+
+    // Переключение дней
+    body.querySelectorAll('.js-prev-day, .js-next-day').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const iso = btn.getAttribute('data-iso');
+        const d = new Date(iso + 'T00:00:00');
+        d.setDate(d.getDate() + (btn.classList.contains('js-prev-day') ? -1 : 1));
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        loadDay(`${y}-${m}-${dd}`);
+      });
+    });
+
+    // Удаление записи без перезагрузки
+    body.querySelectorAll('.js-diary-delete').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Удалить запись?')) return;
+        const url = btn.dataset.url;
+        const res = await fetch(url, { method: 'DELETE', headers: { 'X-CSRFToken': getCookie('csrftoken') }});
+        if (res.ok) {
+          // Просто перезагрузим текущий день в модалке
+          const h2 = body.querySelector('.diary-modal-header h2');
+          const iso = h2.getAttribute('data-iso') || h2.dataset.iso;
+          loadDay(iso);
+        } else {
+          alert('Не удалось удалить запись.');
+        }
+      });
+    });
+  }
+
+  // Открытие модалки кликом по календарю
+  document.querySelectorAll('.calendar-cell').forEach(cell => {
+    cell.addEventListener('click', () => loadDay(cell.dataset.date));
+  });
+
+  // Закрытие модалки
+  document.querySelector('#dayModal .close').addEventListener('click', () => {
+    document.getElementById('dayModal').style.display = 'none';
+  });
+
+  // CSRF
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let c of cookies) {
+        c = c.trim();
+        if (c.startsWith(name + '=')) {
+          cookieValue = decodeURIComponent(c.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
+
+
+<style>
+.export-actions {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0 20px;
+}
+.export-actions .btn.small {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+</style>
+
+{% endblock %}

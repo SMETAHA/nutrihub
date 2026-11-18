@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% block title %}Добавить запись{% endblock %}
+
+{% block content %}
+
+<!-- 📅 Навигация по датам -->
+<h2 style="display:flex;align-items:center;gap:10px;">
+  <button id="prev-day" class="btn">←</button>
+  Дневник — <span id="entry-date-label" data-iso="{{ default_day|date:'Y-m-d' }}">
+    {{ default_day|date:"d E Y" }}
+  </span>
+  <button id="next-day" class="btn">→</button>
+</h2>
+
+<!-- 🧭 Быстрый выбор даты -->
+<div class="planner-toolbar" style="margin: 10px 0; display: flex; gap: 10px; flex-wrap: wrap;">
+  <input type="date" id="entry-date-input" value="{{ default_day|date:'Y-m-d' }}">
+  <button id="today-btn" class="btn pill">Сегодня</button>
+  <button id="tomorrow-btn" class="btn pill">Завтра</button>
+</div>
+
+<!-- 📝 Форма добавления записи -->
+<form method="post" class="card" id="add-form">
+  {% csrf_token %}
+  <input type="hidden" name="date" id="form-date" value="{{ default_day|date:'Y-m-d' }}">
+
+  <label>⏰ Время приёма пищи</label>
+  <input type="time" name="time" value="12:00" required>
+
+  <label>Тип приёма</label>
+  <select name="meal">
+    <option value="breakfast">Завтрак</option>
+    <option value="lunch">Обед</option>
+    <option value="dinner">Ужин</option>
+    <option value="snack">Перекус</option>
+  </select>
+
+  <label>Категория</label>
+  <select name="category" id="category" required>
+    <option value="">— Выберите —</option>
+    <option value="product">Продукт</option>
+    <option value="recipe">Блюдо</option>
+  </select>
+
+  <label>Название</label>
+  <select name="item_id" id="item">
+    <optgroup label="Продукты" id="grp-products" style="display:none;">
+      {% for p in products %}
+      <option value="{{ p.id }}">{{ p.name }}</option>
+      {% endfor %}
+    </optgroup>
+    <optgroup label="Рецепты" id="grp-recipes" style="display:none;">
+      {% for r in recipes %}
+      <option value="{{ r.id }}">{{ r.name }}</option>
+      {% endfor %}
+    </optgroup>
+  </select>
+
+  <div id="qty-grams" style="display:none;">
+    <label>Количество (г)</label>
+    <input type="number" name="grams" id="grams" min="1" step="1">
+  </div>
+
+  <div id="qty-servings" style="display:none;">
+    <label>Порций</label>
+    <input type="number" name="servings" id="servings" min="0.1" step="0.1">
+    <small>Для блюд можно указать либо порции, либо граммы.</small>
+  </div>
+
+  <label>Заметка (опционально)</label>
+  <input type="text" name="note" maxlength="240" placeholder="Например: после тренировки">
+
+  <div class="card mt">
+    <strong>Предпросмотр:</strong>
+    <div id="preview" class="muted">—</div>
+  </div>
+
+  <button class="btn-primary mt" type="submit">💾 Сохранить</button>
+</form>
+
+<!-- ⏪ Возврат в дневник -->
+<div style="margin-top: 20px; display:flex; justify-content:center;">
+  <a href="/diary/?date={{ default_day|date:'Y-m-d' }}" class="btn pill">← Вернуться в дневник</a>
+</div>
+
+<script>
+ // === КАТЕГОРИИ ===
+  const cat = document.getElementById('category');
+  const item = document.getElementById('item');
+  const grpP = document.getElementById('grp-products');
+  const grpR = document.getElementById('grp-recipes');
+  const qg = document.getElementById('qty-grams');
+  const qs = document.getElementById('qty-servings');
+  const gramsInp = document.getElementById('grams');
+  const servInp = document.getElementById('servings');
+  const preview = document.getElementById('preview');
+
+  function toggleByCategory() {
+    const v = cat.value;
+    grpP.style.display = v === 'product' ? 'block' : 'none';
+    grpR.style.display = v === 'recipe' ? 'block' : 'none';
+    qg.style.display = v ? 'block' : 'none';
+    qs.style.display = v === 'recipe' ? 'block' : 'none';
+    item.value = "";
+    gramsInp.value = "";
+    servInp.value = "";
+    preview.textContent = '—';
+  }
+
+  async function refreshPreview() {
+    const category = cat.value;
+    const idSel = item.value;
+    if (!category || !idSel) {
+      preview.textContent = '—';
+      return;
+    }
+
+    const grams = gramsInp.value || 0;
+    const servings = servInp.value || 0;
+    if (grams == 0 && servings == 0) {
+      preview.textContent = '—';
+      return;
+    }
+
+    const url = `/diary/api/preview/?category=${encodeURIComponent(category)}&item_id=${encodeURIComponent(idSel)}&grams=${grams}&servings=${servings}`;
+    try {
+      const r = await fetch(url);
+      const d = await r.json();
+      preview.textContent = `${d.kcal.toFixed(0)} ккал · Б ${d.protein.toFixed(1)} г · Ж ${d.fat.toFixed(1)} г · У ${d.carbs.toFixed(1)} г`;
+    } catch (e) {
+      console.error(e);
+      preview.textContent = 'Ошибка загрузки';
+    }
+  }
+
+  cat.addEventListener('change', toggleByCategory);
+  item.addEventListener('change', refreshPreview);
+  gramsInp.addEventListener('input', refreshPreview);
+  servInp.addEventListener('input', refreshPreview);
+
+  const dateLabel = document.getElementById('entry-date-label');
+  const dateInput = document.getElementById('entry-date-input');
+  const hiddenDate = document.getElementById('form-date');
+
+  // Функция для установки даты на странице без перезагрузки
+  function setDateOnPage(iso) {
+    dateLabel.dataset.iso = iso;
+    const d = new Date(iso);
+    // Красивый формат
+    const formatted = d.toLocaleDateString('ru-RU', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+    dateLabel.textContent = formatted;
+    dateInput.value = iso;
+    hiddenDate.value = iso;
+  }
+
+  // Переключение даты по стрелкам
+  document.getElementById('prev-day').addEventListener('click', () => {
+    const d = new Date(dateLabel.dataset.iso);
+    d.setDate(d.getDate() - 1);
+    const iso = d.toISOString().slice(0, 10);
+    setDateOnPage(iso);
+  });
+
+  document.getElementById('next-day').addEventListener('click', () => {
+    const d = new Date(dateLabel.dataset.iso);
+    d.setDate(d.getDate() + 1);
+    const iso = d.toISOString().slice(0, 10);
+    setDateOnPage(iso);
+  });
+
+  // Сегодня / Завтра
+  document.getElementById('today-btn').addEventListener('click', () => {
+    const d = new Date();
+    setDateOnPage(d.toISOString().slice(0, 10));
+  });
+
+  document.getElementById('tomorrow-btn').addEventListener('click', () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    setDateOnPage(d.toISOString().slice(0, 10));
+  });
+
+  // При ручном выборе даты
+  dateInput.addEventListener('change', () => {
+    setDateOnPage(dateInput.value);
+  });
+</script>
+
+{% endblock %}

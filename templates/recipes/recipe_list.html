@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Рецепты{% endblock %}
+{% block content %}
+<h1>🧾 Мои рецепты</h1>
+
+<form method="get" class="row" style="gap:8px;margin:8px 0 16px;">
+  <input type="text" name="q" value="{{ q }}" placeholder="Название или теги">
+  <button class="btn">Искать</button>
+  <a class="btn-primary" href="{% url 'recipe_create' %}">+ Новый рецепт</a>
+</form>
+
+{% if recipes %}
+<div class="cards-grid">
+  {% for r in recipes %}
+  <div class="card">
+    <h3 style="margin:0 0 6px 0;">{{ r.name }}</h3>
+    {% if r.tags %}<div class="text-muted" style="font-size:.9rem;">#{{ r.tags }}</div>{% endif %}
+    <div class="mt">
+      <div><b>Итого:</b> {{ r.total_kcal|floatformat:0 }} ккал · Б {{ r.total_protein|floatformat:0 }} · Ж {{ r.total_fat|floatformat:0 }} · У {{ r.total_carbs|floatformat:0 }}</div>
+      <div class="text-muted">100 г: {{ r.per100_kcal|floatformat:0 }} ккал · Порций: {{ r.servings }}</div>
+    </div>
+    <div class="row" style="gap:8px; margin-top:10px;">
+      <a class="btn" href="{% url 'recipe_edit' r.pk %}">✏️ Редактировать</a>
+      <form method="post" action="{% url 'recipe_delete' r.pk %}" onsubmit="return confirm('Удалить рецепт?')">
+        {% csrf_token %}
+        <button class="btn">🗑️ Удалить</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<p>Пока нет рецептов.</p>
+{% endif %}
+{% endblock %}

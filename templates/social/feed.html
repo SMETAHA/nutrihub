@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Лента{% endblock %}
+{% block content %}
+<h2>Лента</h2>
+<form method="post" class="form-grid">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-primary">Опубликовать</button>
+</form>
+<div class="mt">
+  {% for p in posts %}
+  <div class="card">
+    <div class="row space-between">
+      <div>@{{ p.user.username }}</div>
+      <div>{{ p.created_at|date:"d.m H:i" }}</div>
+    </div>
+    <p>{{ p.text|linebreaks }}</p>
+    <a class="btn" href="/feed/react/{{ p.id }}/like">👍 {{ p.reactions.count }}</a>
+  </div>
+  {% empty %}
+  <p>У ваших друзей пока нет постов.</p>
+  {% endfor %}
+</div>
+{% endblock %}

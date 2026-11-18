@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Планировщик{% endblock %}
+
+{% block content %}
+<h2 style="display:flex;align-items:center;gap:10px;">
+  <button id="prev-day" class="btn">←</button>
+  Планировщик — <span id="planner-date-label" data-iso="{{ planner_date|date:'Y-m-d' }}">
+    {{ planner_date|date:"d E Y" }}
+  </span>
+  <button id="next-day" class="btn">→</button>
+</h2>
+
+<div class="planner-toolbar" style="margin: 10px 0; display: flex; gap: 10px; flex-wrap: wrap;">
+  <input type="date" id="planner-date-input" value="{{ planner_date|date:'Y-m-d' }}">
+  <button id="today-btn" class="btn pill">Сегодня</button>
+  <button id="tomorrow-btn" class="btn pill">Завтра</button>
+</div>
+
+<!-- ВАЖНО: action указывает на /diary/planner/add/ -->
+<form method="post" class="card" id="planner-form" action="{% url 'planner_add' %}">
+  {% csrf_token %}
+
+  <!-- скрытая дата, которую читает planner_add -->
+  <input type="hidden" id="form-date" name="date" value="{{ planner_date|date:'Y-m-d' }}">
+
+  <label>Тип приёма</label>
+  <select name="meal_type" required>
+    <option value="breakfast">Завтрак</option>
+    <option value="lunch">Обед</option>
+    <option value="dinner">Ужин</option>
+    <option value="snack">Перекус</option>
+  </select>
+
+  <label>⏰ Время</label>
+  <input type="time" name="time" value="12:00" required>
+
+  <label>Категория</label>
+  <select name="category" id="category-select" required>
+    <option value="product" selected>Продукт</option>
+    <option value="recipe">Блюдо</option>
+  </select>
+
+  <label>Выбор</label>
+  <select name="item_id" id="item-select" required>
+    <optgroup label="Продукты" id="group-products">
+      {% for p in products %}
+      <option value="{{ p.id }}" data-type="product">{{ p.name }}</option>
+      {% endfor %}
+    </optgroup>
+    <optgroup label="Рецепты" id="group-recipes" style="display:none;">
+      {% for r in recipes %}
+      <option value="{{ r.id }}" data-type="recipe">{{ r.name }}</option>
+      {% endfor %}
+    </optgroup>
+  </select>
+
+  <label>Граммы</label>
+  <input type="number" name="grams" id="grams" min="0" step="1" placeholder="0">
+
+  <label>Порции</label>
+  <input type="number" name="servings" id="servings" min="0" step="0.1" placeholder="0">
+
+  <label>Заметка (опционально)</label>
+  <input type="text" name="note" placeholder="Например: перед тренировкой">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
+    <span id="preview-calories">0 ккал • Б 0 • Ж 0 • У 0</span>
+    <button type="submit" class="btn pill">+ Добавить</button>
+  </div>
+</form>
+
+<h3 style="margin-top: 20px;">Запланированные приёмы</h3>
+<table class="diary-table">
+  <thead>
+    <tr>
+      <th>✔</th>
+      <th>Время</th>
+      <th>Название</th>
+      <th>Ккал</th>
+      <th>Заметка</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if planned_meals %}
+      {% for m in planned_meals %}
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>{{ m.time|time:"H:i" }}</td>
+          <td>
+            {% if m.product %}{{ m.product.name }}{% endif %}
+            {% if m.recipe %}{{ m.recipe.name }}{% endif %}
+          </td>
+          <td>{{ m.total_kcal|floatformat:0 }}</td>
+          <td>{{ m.note }}</td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr><td colspan="5" style="text-align:center;">Нет запланированных приёмов</td></tr>
+    {% endif %}
+  </tbody>
+</table>
+
+<div style="margin-top: 20px; display:flex; justify-content:center;">
+  <a href="/diary/?date={{ planner_date|date:'Y-m-d' }}" class="btn pill">← Вернуться в дневник</a>
+</div>
+
+<script>
+  const dateInput   = document.getElementById('planner-date-input');
+  const dateLabel   = document.getElementById('planner-date-label');
+  const formDate    = document.getElementById('form-date');
+  const form        = document.getElementById('planner-form');
+
+  function navigateToDate(iso) {
+    window.location.href = `/diary/planner/?date=${iso}`;
+  }
+
+  // Стрелки
+  document.getElementById('prev-day').addEventListener('click', () => {
+    const d = new Date(dateLabel.dataset.iso);
+    d.setDate(d.getDate() - 1);
+    navigateToDate(d.toISOString().slice(0, 10));
+  });
+  document.getElementById('next-day').addEventListener('click', () => {
+    const d = new Date(dateLabel.dataset.iso);
+    d.setDate(d.getDate() + 1);
+    navigateToDate(d.toISOString().slice(0, 10));
+  });
+
+  // Сегодня / Завтра
+  document.getElementById('today-btn').addEventListener('click', () => {
+    const d = new Date();
+    navigateToDate(d.toISOString().slice(0, 10));
+  });
+  document.getElementById('tomorrow-btn').addEventListener('click', () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    navigateToDate(d.toISOString().slice(0, 10));
+  });
+
+  // 📅 При изменении календаря — навигация
+  dateInput.addEventListener('change', () => navigateToDate(dateInput.value));
+
+  // 📌 Ключевой фикс: синхронизировать дату перед сабмитом
+  form.addEventListener('submit', (e) => {
+    const currentIso = dateLabel.dataset.iso;
+    if (!currentIso) {
+      e.preventDefault();
+      alert('Дата не выбрана!');
+      return;
+    }
+    formDate.value = currentIso;
+  });
+  // Синхронизируем скрытую дату формы с текущей датой на странице (на случай, если ты меняешь её без перезагрузки)
+  function syncFormDateFromLabel() {
+    const iso = dateLabel.dataset.iso;
+    if (iso) formDate.value = iso;
+  }
+  syncFormDateFromLabel();
+
+  // ===== Категория: продукт / блюдо + превью КБЖУ =====
+  const catSel        = document.getElementById('category-select');
+  const groupProducts = document.getElementById('group-products');
+  const groupRecipes  = document.getElementById('group-recipes');
+  const gramsInput    = document.getElementById('grams');
+  const servingsInput = document.getElementById('servings');
+  const itemSel       = document.getElementById('item-select');
+  const preview       = document.getElementById('preview-calories');
+
+  function toggleGroups() {
+    const isProduct = catSel.value === 'product';
+    groupProducts.style.display = isProduct ? 'block' : 'none';
+    groupRecipes.style.display  = isProduct ? 'none'  : 'block';
+    // ставим первый вариант соответствующей группы
+    const target = isProduct ? groupProducts : groupRecipes;
+    const first = target.querySelector('option');
+    if (first) itemSel.value = first.value;
+    refreshPreview();
+  }
+
+  catSel.addEventListener('change', toggleGroups);
+  [itemSel, gramsInput, servingsInput].forEach(el => el.addEventListener('input', refreshPreview));
+  toggleGroups(); // первичная инициализация
+
+  async function refreshPreview() {
+    const category = catSel.value;
+    const item     = itemSel.value;
+    const g        = gramsInput.value || 0;
+    const s        = servingsInput.value || 0;
+    if (!category || !item) { preview.textContent = '—'; return; }
+    try {
+      const res = await fetch(`/diary/api/preview/?category=${category}&item_id=${item}&grams=${g}&servings=${s}`);
+      if (!res.ok) throw 0;
+      const d = await res.json();
+      preview.textContent = `${d.kcal} ккал • Б ${d.protein} • Ж ${d.fat} • У ${d.carbs}`;
+    } catch {
+      preview.textContent = '—';
+    }
+  }
+</script>
+{% endblock %}

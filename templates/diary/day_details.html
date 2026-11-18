@@ -1,0 +1,170 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/diary.css' %}">
+
+<style>
+  /* 🪟 Увеличенная ширина модального окна */
+  #dayModal .modal-content {
+    max-width: 90vw;
+    width: 90%;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 📐 Контейнер для таблиц */
+  .day-modal-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .scroll-section {
+    overflow: auto;
+    max-height: calc(90vh - 150px);
+    padding-right: 8px;
+  }
+
+  /* 📱 Адаптив: если экран узкий — одна колонка */
+  @media (max-width: 1024px) {
+    .day-modal-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  #planner-empty-msg {
+    text-align: center;
+    margin-top: 8px;
+    opacity: 0.7;
+  }
+</style>
+
+<!-- 🧭 Заголовок модалки с навигацией -->
+<div class="diary-modal-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+  <div class="date-nav" style="display:flex;align-items:center;gap:8px;">
+    <button type="button" class="btn js-prev-day" data-iso="{{ day|date:'Y-m-d' }}">←</button>
+    <h2 class="mono" data-iso="{{ day|date:'Y-m-d' }}">📅 {{ day|date:"d E Y" }}</h2>
+    <button type="button" class="btn js-next-day" data-iso="{{ day|date:'Y-m-d' }}">→</button>
+  </div>
+
+  <div class="modal-actions" style="display:flex;gap:8px;">
+    <a href="/diary/add/?date={{ day|date:'Y-m-d' }}" class="btn pill">➕ Запись</a>
+    <a href="/diary/planner/?date={{ day|date:'Y-m-d' }}" class="btn pill">📋 Планировщик</a>
+  </div>
+</div>
+
+<!-- 📊 Две таблицы: фактические приёмы и план -->
+<div class="day-modal-layout">
+
+  <!-- 🥗 Фактические приёмы -->
+  <div class="scroll-section">
+    <h3>Фактические приёмы</h3>
+    {% if entries %}
+    <div class="diary-table-wrapper">
+      <table class="diary-table">
+        <thead>
+          <tr>
+            <th>⏰</th><th>🍽️ Продукт / Блюдо</th><th>Вес</th>
+            <th>Ккал</th><th>Б</th><th>Ж</th><th>У</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in entries %}
+          <tr data-entry-id="{{ e.id }}">
+            <td>{{ e.time|time:"H:i" }}</td>
+            <td>{% if e.recipe %}🍲 {{ e.recipe.name }}{% elif e.product %}🥦 {{ e.product.name }}{% endif %}</td>
+            <td>{{ e.grams|floatformat:0 }}</td>
+            <td>{{ e.total_kcal|floatformat:0 }}</td>
+            <td>{{ e.total_protein|floatformat:0 }}</td>
+            <td>{{ e.total_fat|floatformat:0 }}</td>
+            <td>{{ e.total_carbs|floatformat:0 }}</td>
+            <td>
+              <button type="button"
+                      class="js-diary-delete"
+                      data-id="{{ e.id }}"
+                      data-url="{% url 'delete_diary_entry_api' e.id %}"
+                      title="Удалить">🗑️</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3"><strong>Итого</strong></td>
+            <td><strong>{{ totals.kcal|floatformat:0 }}</strong></td>
+            <td><strong>{{ totals.p|floatformat:0 }}</strong></td>
+            <td><strong>{{ totals.f|floatformat:0 }}</strong></td>
+            <td><strong>{{ totals.c|floatformat:0 }}</strong></td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    {% else %}
+      <p class="no-entries">📭 Записей за этот день нет.</p>
+    {% endif %}
+
+    <div class="export-buttons" style="margin-top:12px;display:flex;gap:8px;">
+      <a href="{% url 'export_day_csv' day|date:'Y-m-d' %}" class="btn">CSV</a>
+      <a href="{% url 'export_day_pdf' day|date:'Y-m-d' %}" class="btn">PDF</a>
+      <a href="{% url 'export_day_md' day|date:'Y-m-d' %}" class="btn">MD</a>
+    </div>
+  </div>
+
+  <!-- 📝 План на день -->
+  <div class="scroll-section">
+    <h3>План на день</h3>
+
+    <!-- ✅ теперь таблица всегда рендерится -->
+    <table class="planner-table" {% if not planned_meals %}style="display:none"{% endif %}>
+      <thead>
+        <tr>
+          <th>⏰</th>
+          <th>🍽 Название</th>
+          <th>Вес</th>
+          <th>Ккал</th>
+          <th>Б</th>
+          <th>Ж</th>
+          <th>У</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pm in planned_meals %}
+        <tr data-id="{{ pm.id }}">
+          <td>{{ pm.time|time:"H:i" }}</td>
+          <td>{% if pm.product %}🥦 {{ pm.product.name }}{% else %}🍲 {{ pm.recipe.name }}{% endif %}</td>
+          <td>{{ pm.grams|floatformat:0 }}</td>
+          <td>{{ pm.total_kcal|floatformat:0 }}</td>
+          <td>{{ pm.total_protein|floatformat:0 }}</td>
+          <td>{{ pm.total_fat|floatformat:0 }}</td>
+          <td>{{ pm.total_carbs|floatformat:0 }}</td>
+          <td>
+            <button class="js-planner-transfer"
+              data-url="{% url 'planner_transfer' pm.id %}"
+              title="Перенести в дневник">⬇</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="totals-label">Итого</td>
+          <td><strong>{{ planned_totals.kcal|floatformat:0 }}</strong></td>
+          <td><strong>{{ planned_totals.p|floatformat:0 }}</strong></td>
+          <td><strong>{{ planned_totals.f|floatformat:0 }}</strong></td>
+          <td><strong>{{ planned_totals.c|floatformat:0 }}</strong></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    {% if not planned_meals %}
+    <p id="planner-empty-msg" class="muted">📅 Планов на этот день нет.</p>
+    {% endif %}
+  </div>
+
+</div>

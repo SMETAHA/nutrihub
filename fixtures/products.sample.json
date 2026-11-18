@@ -1,0 +1,40 @@
+[
+  {
+    "model": "products.foodproduct",
+    "pk": 1,
+    "fields": {
+      "name": "Куриная грудка (сырая)",
+      "brand": "",
+      "calories_per_100g": 113,
+      "protein_per_100g": 23.1,
+      "fat_per_100g": 1.3,
+      "carbs_per_100g": 0,
+      "fiber_per_100g": 0,
+      "sugar_per_100g": 0,
+      "sodium_mg_per_100g": 64,
+      "potassium_mg_per_100g": 256,
+      "created_by": null,
+      "is_public": true,
+      "tags": "мясо,курица,белок"
+    }
+  },
+  {
+    "model": "products.foodproduct",
+    "pk": 2,
+    "fields": {
+      "name": "Рис белый сухой",
+      "brand": "",
+      "calories_per_100g": 344,
+      "protein_per_100g": 6.7,
+      "fat_per_100g": 0.8,
+      "carbs_per_100g": 78.9,
+      "fiber_per_100g": 1.3,
+      "sugar_per_100g": 0.5,
+      "sodium_mg_per_100g": 5,
+      "potassium_mg_per_100g": 115,
+      "created_by": null,
+      "is_public": true,
+      "tags": "крупы,углеводы"
+    }
+  }
+]

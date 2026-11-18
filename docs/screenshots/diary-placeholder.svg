@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#f7f8f4"/>
+  <rect x="70" y="55" width="1140" height="610" rx="24" fill="#fff" stroke="#cfdecf" stroke-width="3"/>
+  <rect x="110" y="100" width="520" height="500" rx="16" fill="#eef7f1"/>
+  <rect x="680" y="100" width="490" height="500" rx="16" fill="#f4f7ef"/>
+  <text x="640" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="#668575">Дневник питания — placeholder</text>
+</svg>

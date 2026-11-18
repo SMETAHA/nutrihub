@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#eef8f1"/>
+  <rect x="80" y="60" width="1120" height="600" rx="24" fill="#ffffff" stroke="#9ccdb0" stroke-width="4"/>
+  <text x="640" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="44" fill="#2f6e4f">NutriHub</text>
+  <text x="640" y="400" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#668575">Главная страница — placeholder</text>
+</svg>

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Настройки профиля{% endblock %}
+{% block content %}
+
+<h2>Настройки профиля</h2>
+
+<form method="post" enctype="multipart/form-data" class="form-grid">
+  {% csrf_token %}
+
+  <!-- 🧍 Общая информация -->
+  <div class="card">
+    <h3>Общая информация</h3>
+    <label>О себе</label>
+    {{ form.bio }}
+
+    <label>Аватар</label>
+    {{ form.avatar }}
+
+    <label>Пол</label>
+    {{ form.sex }}
+
+    <label>Дата рождения</label>
+    {{ form.birth_date }}
+  </div>
+
+  <!-- ⚖️ Параметры тела -->
+  <div class="card">
+    <h3>Параметры тела</h3>
+    <label>Рост (см)</label>
+    {{ form.height_cm }}
+
+    <label>Начальный вес (кг)</label>
+    {{ form.start_weight_kg }}
+
+    <label>Текущий вес (кг)</label>
+    {{ form.current_weight_kg }}
+
+    <label>Целевой вес (кг)</label>
+    {{ form.target_weight_kg }}
+
+    <label>Талия (см)</label>
+    {{ form.waist_cm }}
+
+    <label>Шея (см)</label>
+    {{ form.neck_cm }}
+
+    <label>Бёдра (см)</label>
+    {{ form.hip_cm }}
+
+    <label>Процент жира (%)</label>
+    {{ form.body_fat_percent }}
+  </div>
+
+  <!-- 🎯 Цели -->
+  <div class="card">
+    <h3>Цели</h3>
+    <label>Уровень активности</label>
+    {{ form.activity_level }}
+
+    <label>Тип цели</label>
+    {{ form.goal_type }}
+
+    <label>Изменение в неделю (кг)</label>
+    {{ form.weekly_delta_kg }}
+
+    <label>Режим макросов</label>
+    {{ form.macro_mode }}
+  </div>
+
+  <!-- 🌓 Внешний вид -->
+  <div class="card">
+    <h3>Внешний вид</h3>
+    <label>Тема интерфейса</label>
+    {{ form.theme }}
+  </div>
+
+  <div style="grid-column: 1 / -1; text-align: center; margin-top: 20px;">
+    <button class="btn btn-primary" type="submit">Сохранить</button>
+  </div>
+</form>
+
+{% endblock %}

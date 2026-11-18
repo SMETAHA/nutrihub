@@ -1,0 +1,8 @@
+name: Bug report
+description: Сообщить об ошибке
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: Что произошло? }
+    validations: { required: true }
