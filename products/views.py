@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
+from django.core.paginator import Paginator
 
 
 def product_list(request):
@@ -54,8 +55,12 @@ def product_list(request):
     )
     tags = sorted(set([t.strip() for s in tag_list for t in s.split(",") if t.strip()]))
 
+    paginator = Paginator(products_qs, 20)
+    page_number = request.GET.get('page')
+    products_page = paginator.get_page(page_number)
+
     return render(request, "products/list.html", {
-        "products": products_qs,
+        "products": products_page,
         "tags": tags,
         "selected_tag": tag,
         "query": q,

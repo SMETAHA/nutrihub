@@ -180,6 +180,36 @@ python manage.py loaddata fixtures/demo_content.sample.json
 | `/settings/` | Профиль и настройки |
 | `/admin/` | Административная панель |
 
+## REST API
+
+API доступен по префиксу `/api/` и поддерживает:
+
+| Метод | Эндпоинт | Назначение |
+|---|---|---|
+| `POST` | `/api/auth/token/` | Получить токен пользователя |
+| `GET`, `POST` | `/api/products/` | Список и создание продуктов |
+| `GET`, `PUT`, `PATCH`, `DELETE` | `/api/products/{id}/` | Управление продуктом |
+| `GET`, `POST` | `/api/recipes/` | Список и создание рецептов |
+| `GET`, `PUT`, `PATCH`, `DELETE` | `/api/recipes/{id}/` | Управление рецептом |
+| `GET`, `POST` | `/api/diary/` | Записи дневника |
+| `GET`, `PUT`, `PATCH`, `DELETE` | `/api/diary/{id}/` | Управление записью |
+| `GET`, `POST` | `/api/planned-meals/` | Запланированные приёмы |
+| `GET`, `PUT`, `PATCH`, `DELETE` | `/api/planned-meals/{id}/` | Управление планом |
+
+Аутентификация поддерживает session и token authentication:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/auth/token/ \
+  -d "username=<username>" \
+  -d "password=<password>"
+
+curl -H "Authorization: Token <token>" \
+  http://127.0.0.1:8000/api/products/
+```
+
+Ответы постраничных списков используют стандартный формат Django REST Framework:
+`count`, `next`, `previous` и `results`.
+
 ## Конфигурация
 
 Для разработки скопируйте файл `.env.example` и измените значения:

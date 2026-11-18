@@ -14,6 +14,7 @@ from recipes.models import Recipe
 from django.shortcuts import get_object_or_404
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+from django.core.paginator import Paginator
 
 @login_required
 def diary_view(request):
@@ -49,9 +50,11 @@ def diary_view(request):
     # ⚖️ Форма веса (если планируешь трекать динамику)
     weight_form = WeightLogForm()
 
+    entries_page = Paginator(entries, 20).get_page(request.GET.get('page'))
+
     return render(request, 'diary/diary.html', {
         'form': form,
-        'entries': entries,
+        'entries': entries_page,
         'day': today,
         'totals': {
             'kcal': total_kcal,

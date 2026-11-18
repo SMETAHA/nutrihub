@@ -3,11 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Post, Reaction, Friendship, Notification
 from .forms import PostForm
+from django.core.paginator import Paginator
 
 @login_required
 def feed(request):
     friends = Friendship.objects.filter(user=request.user).values_list('friend_id', flat=True)
-    qs = Post.objects.filter(user__in=list(friends)+[request.user.id]).order_by('-created_at')[:100]
+    qs = Post.objects.filter(
+        user__in=list(friends) + [request.user.id]
+    ).select_related('user').prefetch_related('reactions').order_by('-created_at')
+    posts = Paginator(qs, 20).get_page(request.GET.get('page'))
     form = PostForm()
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -16,7 +20,7 @@ def feed(request):
             p.user = request.user
             p.save()
             return redirect('feed')
-    return render(request, 'social/feed.html', {'posts': qs, 'form': form})
+    return render(request, 'social/feed.html', {'posts': posts, 'form': form})
 
 @login_required
 def add_friend(request, username):

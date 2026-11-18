@@ -26,6 +26,18 @@
   </form>
 </div>
 
+{% if products.paginator.num_pages > 1 %}
+<nav class="pagination" aria-label="Страницы продуктов">
+  {% if products.has_previous %}
+    <a class="btn" href="?page={{ products.previous_page_number }}&q={{ query }}&tag={{ selected_tag }}&sort={{ sort_by }}">Назад</a>
+  {% endif %}
+  <span>Страница {{ products.number }} из {{ products.paginator.num_pages }}</span>
+  {% if products.has_next %}
+    <a class="btn" href="?page={{ products.next_page_number }}&q={{ query }}&tag={{ selected_tag }}&sort={{ sort_by }}">Вперёд</a>
+  {% endif %}
+</nav>
+{% endif %}
+
 <div class="product-table">
   <table>
     <thead>

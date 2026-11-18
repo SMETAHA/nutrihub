@@ -14,5 +14,6 @@ urlpatterns = [
     path('recipes/', include('recipes.urls')),
     path('feed/', include('socialfeed.urls')),
     path('dashboard/macro-target/', macro_target_api, name='macro_target_api'),
+    path('api/', include('api.urls')),
 ]
 

@@ -1,8 +1,14 @@
-<button class="btn" id="exportBtn">📤 Экспортировать</button>
+{% extends 'base.html' %}
+{% block title %}Дневник питания{% endblock %}
+{% block content %}
+
+<h2>Дневник питания — {{ day|date:"d E Y" }}</h2>
+
+<button class="btn" id="exportBtn">Экспортировать</button>
 
 <div id="exportModal" class="modal hidden">
   <div class="modal-content">
-    <h3>📅 Экспорт дневника</h3>
+    <h3>Экспорт дневника</h3>
     <label>Выберите дату:</label>
     <input type="date" id="exportDate" value="{{ day }}">
 
@@ -24,11 +30,22 @@
   </div>
 </div>
 
+{% if entries.paginator.num_pages > 1 %}
+<nav class="pagination" aria-label="Страницы дневника">
+  {% if entries.has_previous %}
+  <a class="btn" href="?date={{ day|date:'Y-m-d' }}&page={{ entries.previous_page_number }}">Назад</a>
+  {% endif %}
+  <span>Страница {{ entries.number }} из {{ entries.paginator.num_pages }}</span>
+  {% if entries.has_next %}
+  <a class="btn" href="?date={{ day|date:'Y-m-d' }}&page={{ entries.next_page_number }}">Вперёд</a>
+  {% endif %}
+</nav>
+{% endif %}
+
 <script>
   const modal = document.getElementById("exportModal");
   const btn = document.getElementById("exportBtn");
   const close = document.getElementById("closeExportModal");
-
   const dateInp = document.getElementById("exportDate");
   const monthInp = document.getElementById("exportMonth");
 
@@ -49,33 +66,48 @@
   };
 
   document.addEventListener('click', (e) => {
-  // Удаление записи
-  if (e.target.classList.contains('js-diary-delete')) {
-    const id = e.target.dataset.id;
-    const url = e.target.dataset.url;
-    fetch(url, {
-      method: 'POST',
-      headers: { 'X-CSRFToken': getCookie('csrftoken') }
-    }).then(res => {
-      if (res.ok) {
-        e.target.closest('tr').remove();
-      }
-    });
-  }
+    if (e.target.classList.contains('js-diary-delete')) {
+      const id = e.target.dataset.id;
+      const url = e.target.dataset.url;
+      fetch(url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') }
+      }).then(res => {
+        if (res.ok) {
+          e.target.closest('tr').remove();
+        }
+      });
+    }
 
-  // 📌 Перенос плана в запись
-  if (e.target.classList.contains('js-planner-transfer')) {
-    const id = e.target.dataset.id;
-    const url = e.target.dataset.url;
-    fetch(url, {
-      method: 'POST',
-      headers: { 'X-CSRFToken': getCookie('csrftoken') }
-    }).then(res => {
-      if (res.ok) {
-        e.target.closest('tr').classList.add('transferred');
-        setTimeout(() => e.target.closest('tr').remove(), 300);
+    if (e.target.classList.contains('js-planner-transfer')) {
+      const id = e.target.dataset.id;
+      const url = e.target.dataset.url;
+      fetch(url, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') }
+      }).then(res => {
+        if (res.ok) {
+          e.target.closest('tr').classList.add('transferred');
+          setTimeout(() => e.target.closest('tr').remove(), 300);
+        }
+      });
+    }
+  });
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        const parts = cookie.trim().split('=');
+        if (parts.shift() === name) {
+          cookieValue = decodeURIComponent(parts.join('='));
+          break;
+        }
       }
-    });
+    }
+    return cookieValue;
   }
-});
 </script>
+
+{% endblock %}

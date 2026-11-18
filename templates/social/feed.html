@@ -21,4 +21,15 @@
   <p>У ваших друзей пока нет постов.</p>
   {% endfor %}
 </div>
+{% if posts.paginator.num_pages > 1 %}
+<nav class="pagination" aria-label="Страницы ленты">
+  {% if posts.has_previous %}
+    <a class="btn" href="?page={{ posts.previous_page_number }}">Назад</a>
+  {% endif %}
+  <span>Страница {{ posts.number }} из {{ posts.paginator.num_pages }}</span>
+  {% if posts.has_next %}
+    <a class="btn" href="?page={{ posts.next_page_number }}">Вперёд</a>
+  {% endif %}
+</nav>
+{% endif %}
 {% endblock %}
