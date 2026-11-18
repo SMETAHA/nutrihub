@@ -21,7 +21,7 @@ class DiaryEntry(models.Model):
     meal  = models.CharField(max_length=16, choices=MEAL_CHOICES, default="breakfast")
 
     # либо продукт, либо рецепт (ровно один)
-    product = models.ForeignKey(FoodProduct, null=True, blank=True, on_delete=models.CASCADE)
+    product = models.ForeignKey(FoodProduct, null=True, blank=True, on_delete=models.PROTECT)
     recipe  = models.ForeignKey(Recipe, null=True, blank=True, on_delete=models.CASCADE)
 
     grams     = models.FloatField(default=0)   # для продукта ИЛИ рецепт-в-граммах

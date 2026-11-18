@@ -22,7 +22,7 @@
       <option value="carbs" {% if sort_by == 'carbs' %}selected{% endif %}>Углеводы 🍞</option>
     </select>
     <button class="btn btn-primary">Найти</button>
-    <a href="{% url 'add_product' %}" class="btn btn-secondary">+ Добавить</a>
+    <a href="{% url 'product_create' %}" class="btn btn-secondary">+ Добавить</a>
   </form>
 </div>
 
@@ -53,6 +53,13 @@
         <td><span class="tag">{{ p.tags }}</span></td>
         <td>
           <button class="add-btn" data-id="{{ p.id }}">➕</button>
+          {% if user.is_authenticated and p.created_by_id == user.id or user.is_staff %}
+            <a href="{% url 'product_edit' p.id %}" class="btn btn-secondary">Изменить</a>
+            <form method="post" action="{% url 'product_delete' p.id %}" style="display:inline">
+              {% csrf_token %}
+              <button class="btn btn-secondary" onclick="return confirm('Удалить продукт?')">Удалить</button>
+            </form>
+          {% endif %}
         </td>
       </tr>
       {% empty %}

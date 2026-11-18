@@ -8,6 +8,8 @@ from diary.models import DiaryEntry
 from rapidfuzz import process
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+from django.contrib import messages
+from django.db.models.deletion import ProtectedError
 
 
 def product_list(request):
@@ -17,6 +19,10 @@ def product_list(request):
 
     # Базовый запрос
     products_qs = FoodProduct.objects.filter(is_public=True)
+    if request.user.is_authenticated:
+        products_qs = FoodProduct.objects.filter(
+            Q(is_public=True) | Q(created_by=request.user)
+        ).distinct()
 
     # Фильтр по тегу
     if tag:
@@ -42,7 +48,7 @@ def product_list(request):
 
     # Список уникальных тегов
     tag_list = (
-        FoodProduct.objects.filter(is_public=True)
+        FoodProduct.objects        .filter(is_public=True)
         .exclude(tags="")
         .values_list("tags", flat=True)
     )
@@ -67,6 +73,43 @@ def product_create(request):
     else:
         form = ProductForm()
     return render(request, 'products/form.html', {'form': form})
+
+@login_required
+def add_product(request):
+    return redirect('product_create')
+
+@login_required
+def product_edit(request, pk):
+    product = get_object_or_404(
+        FoodProduct,
+        pk=pk,
+    )
+    if product.created_by != request.user and not request.user.is_staff:
+        from django.http import Http404
+        raise Http404
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'products/form.html', {'form': form, 'product': product})
+
+@login_required
+@require_POST
+def product_delete(request, pk):
+    product = get_object_or_404(FoodProduct, pk=pk)
+    if product.created_by != request.user and not request.user.is_staff:
+        from django.http import Http404
+        raise Http404
+    try:
+        product.delete()
+    except ProtectedError:
+        messages.error(request, 'Продукт используется в дневнике или рецептах и не может быть удалён.')
+        return redirect('product_list')
+    return redirect('product_list')
 
 @login_required
 @login_required
@@ -127,7 +170,11 @@ def add_product(request):
 @login_required
 def api_search_products(request):
     q = (request.GET.get('q') or '').strip()
-    qs = FoodProduct.objects.all().order_by('name')
+    qs = FoodProduct.objects.filter(is_public=True)
+    if request.user.is_authenticated:
+        qs = FoodProduct.objects.filter(
+            Q(is_public=True) | Q(created_by=request.user)
+        ).distinct()
     if q:
         qs = qs.filter(name__icontains=q)
     qs = qs[:50]
