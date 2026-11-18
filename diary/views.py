@@ -1,5 +1,6 @@
 import calendar
 import csv
+from django.core.exceptions import ValidationError
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -78,10 +79,13 @@ def update_entry_grams(request, pk):
     e = DiaryEntry.objects.filter(pk=pk, user=request.user).first()
     if not e: return JsonResponse({'ok': False}, status=404)
     try:
-        e.grams = int(request.POST.get('grams'))
+        grams = float(request.POST.get('grams'))
+        if grams < 0:
+            raise ValueError
+        e.grams = grams
         e.save()
         return JsonResponse({'ok': True, 'kcal': e.total_kcal, 'p': e.total_protein, 'f': e.total_fat, 'c': e.total_carbs})
-    except:
+    except (TypeError, ValueError, ValidationError):
         return JsonResponse({'ok': False}, status=400)
 
 @login_required
@@ -131,11 +135,19 @@ def diary_add(request):
         meal      = request.POST.get("meal") or "breakfast"
         category  = request.POST.get("category")
         item_id   = request.POST.get("item_id")
-        grams     = float(request.POST.get("grams") or 0)
-        servings  = float(request.POST.get("servings") or 0)
+        try:
+            grams = float(request.POST.get("grams") or 0)
+            servings = float(request.POST.get("servings") or 0)
+        except (TypeError, ValueError):
+            return JsonResponse({"error": "Некорректный вес или количество порций."}, status=400)
+        if grams < 0 or servings < 0:
+            return JsonResponse({"error": "Вес и количество порций не могут быть отрицательными."}, status=400)
         note      = request.POST.get("note") or ""
 
-        t = datetime.strptime(time_str, "%H:%M").time()
+        try:
+            t = datetime.strptime(time_str, "%H:%M").time()
+        except (TypeError, ValueError):
+            return JsonResponse({"error": "Некорректное время."}, status=400)
 
         entry = DiaryEntry(
             user=request.user,
@@ -145,10 +157,18 @@ def diary_add(request):
             note=note,
         )
         if category == "product":
-            entry.product_id = int(item_id)
+            try:
+                product = get_object_or_404(FoodProduct, id=int(item_id), is_public=True)
+            except (TypeError, ValueError):
+                return JsonResponse({"error": "Некорректный продукт."}, status=400)
+            entry.product = product
             entry.grams = grams
         elif category == "recipe":
-            entry.recipe_id = int(item_id)
+            try:
+                recipe = get_object_or_404(Recipe, id=int(item_id), created_by=request.user)
+            except (TypeError, ValueError):
+                return JsonResponse({"error": "Некорректный рецепт."}, status=400)
+            entry.recipe = recipe
             entry.grams = grams
             entry.servings = servings
 
@@ -187,14 +207,14 @@ def nutrition_preview(request):
     kcal=protein=fat=carbs=0.0
 
     if cat == "product" and item_id:
-        p = FoodProduct.objects.get(id=item_id)
+        p = get_object_or_404(FoodProduct, id=item_id)
         kcal    = p.calories_per_100g    * grams / 100.0
         protein = p.protein_per_100g * grams / 100.0
         fat     = p.fat_per_100g     * grams / 100.0
         carbs   = p.carbs_per_100g   * grams / 100.0
 
     elif cat == "recipe" and item_id:
-        r = Recipe.objects.get(id=item_id)
+        r = get_object_or_404(Recipe, id=item_id)
         if servings > 0:
             base = max(r.servings, 1e-9)
             kcal    = r.total_kcal    * servings / base
@@ -440,7 +460,7 @@ def _parse_iso_date(s: str | None) -> date:
         return date.today()
     try:
         return datetime.fromisoformat(s).date()   # ожидаем ISO
-    except Exception:
+    except (TypeError, ValueError):
         return date.today()
 
 
@@ -474,24 +494,35 @@ def planner_add(request):
     if request.method != "POST":
         return redirect("planner_view")
 
-    date_str  = request.POST.get("date")  # <-- hidden input
-    current_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    date_str = request.POST.get("date")
+    try:
+        current_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except (TypeError, ValueError):
+        return JsonResponse({"error": "Некорректная дата."}, status=400)
 
     meal_type = request.POST.get("meal_type")
     time_str  = request.POST.get("time")
     category  = request.POST.get("category")
     item_id   = request.POST.get("item_id")
-    grams     = float(request.POST.get("grams") or 0)
-    servings  = float(request.POST.get("servings") or 0)
+    try:
+        grams = float(request.POST.get("grams") or 0)
+        servings = float(request.POST.get("servings") or 0)
+    except (TypeError, ValueError):
+        return JsonResponse({"error": "Некорректный вес или количество порций."}, status=400)
+    if grams < 0 or servings < 0:
+        return JsonResponse({"error": "Вес и количество порций не могут быть отрицательными."}, status=400)
     note      = request.POST.get("note") or ""
 
     product = recipe = None
     if category == "product" and item_id:
         product = get_object_or_404(FoodProduct, id=item_id)
     elif category == "recipe" and item_id:
-        recipe = get_object_or_404(Recipe, id=item_id)
+        recipe = get_object_or_404(Recipe, id=item_id, created_by=request.user)
 
-    meal_time = datetime.strptime(time_str, "%H:%M").time()
+    try:
+        meal_time = datetime.strptime(time_str, "%H:%M").time()
+    except (TypeError, ValueError):
+        return JsonResponse({"error": "Некорректное время."}, status=400)
 
     PlannedMeal.objects.create(
         user=request.user,
@@ -510,6 +541,7 @@ def planner_add(request):
 
 
 @login_required
+@require_POST
 def planner_toggle(request, pk):
     meal = get_object_or_404(PlannedMeal, pk=pk, user=request.user)
     meal.done = not meal.done
@@ -518,6 +550,7 @@ def planner_toggle(request, pk):
 
 
 @login_required
+@require_POST
 def planner_delete(request, pk):
     meal = get_object_or_404(PlannedMeal, pk=pk, user=request.user)
     meal.delete()

@@ -6,6 +6,8 @@ from .models import FoodProduct
 from .forms import ProductForm
 from diary.models import DiaryEntry
 from rapidfuzz import process
+from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 
 def product_list(request):
@@ -67,12 +69,28 @@ def product_create(request):
     return render(request, 'products/form.html', {'form': form})
 
 @login_required
+@login_required
+@require_POST
 def quick_add_to_diary(request, pk):
     product = get_object_or_404(FoodProduct, pk=pk)
-    grams = int(request.GET.get('g', 100))
-    DiaryEntry.objects.create(user=request.user, product=product, grams=grams)
+    try:
+        grams = int(request.POST.get('grams', request.GET.get('g', 100)))
+    except (TypeError, ValueError):
+        return JsonResponse({'ok': False, 'error': 'Некорректный вес.'}, status=400)
+    if grams < 0:
+        return JsonResponse({'ok': False, 'error': 'Вес не может быть отрицательным.'}, status=400)
+    now = timezone.localtime()
+    DiaryEntry.objects.create(
+        user=request.user,
+        date=now.date(),
+        time=now.time().replace(second=0, microsecond=0),
+        meal='snack',
+        product=product,
+        grams=grams,
+    )
     return redirect('diary')
 
+@login_required
 def add_product(request):
     if request.method == 'POST':
         name = request.POST.get('name')

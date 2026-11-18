@@ -153,7 +153,7 @@ def calculator(request):
         if (target_real or target) and weight_kg:
             try:
                 macros = macro_split(target_real or target, weight_kg, profile.lean_mass(), mode=getattr(profile, 'macro_mode', 'default'))
-            except Exception:
+            except (TypeError, ValueError, ZeroDivisionError):
                 macros = None
 
         # собираем результат

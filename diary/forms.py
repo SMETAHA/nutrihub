@@ -4,10 +4,12 @@ from .models import DiaryEntry, WeightLog
 class DiaryEntryForm(forms.ModelForm):
     class Meta:
         model = DiaryEntry
-        fields = ['time', 'product', 'recipe', 'grams']
+        fields = ['time', 'meal', 'product', 'recipe', 'grams', 'servings', 'note']
         widgets = {
             'time': forms.TimeInput(attrs={'type': 'time'}),
+            'meal': forms.Select(),
             'grams': forms.NumberInput(attrs={'min': 1, 'step': 1}),
+            'servings': forms.NumberInput(attrs={'min': 0, 'step': '0.1'}),
         }
         labels = {
             'time': 'Время приёма пищи',

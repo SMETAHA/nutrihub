@@ -8,6 +8,37 @@ from .forms import RecipeForm
 from products.models import FoodProduct
 import json
 
+
+def _parse_recipe_ingredients(raw):
+    try:
+        ingredients = json.loads(raw or "[]")
+    except (json.JSONDecodeError, TypeError):
+        return None
+    if not isinstance(ingredients, list):
+        return None
+    parsed = []
+    for ing in ingredients:
+        if not isinstance(ing, dict):
+            continue
+        try:
+            product_id = int(ing.get("product_id"))
+            amount = float(ing.get("amount") or 0)
+            piece_grams = float(ing.get("piece_grams") or 0)
+        except (TypeError, ValueError):
+            continue
+        unit = ing.get("unit")
+        if amount <= 0 or unit not in (RecipeIngredient.Unit.GRAM, RecipeIngredient.Unit.ML, RecipeIngredient.Unit.PCS):
+            continue
+        if not FoodProduct.objects.filter(id=product_id).exists():
+            continue
+        parsed.append({
+            "product_id": product_id,
+            "amount": amount,
+            "unit": unit,
+            "piece_grams": piece_grams,
+        })
+    return parsed
+
 @login_required
 def recipe_list(request):
     recipes = Recipe.objects.filter(created_by=request.user).order_by("-id")
@@ -26,24 +57,13 @@ def recipe_create(request):
 
             # Парсим ингредиенты из скрытого поля
             ingredients_raw = request.POST.get("ingredients_json", "[]")
-            try:
-                ingredients = json.loads(ingredients_raw)
-            except:
-                ingredients = []
+            ingredients = _parse_recipe_ingredients(ingredients_raw)
+            if ingredients is None:
+                form.add_error(None, "Некорректный формат списка ингредиентов.")
+                return render(request, "recipes/recipe_form.html", {"form": form, "ingredients_json": ingredients_raw})
 
             for ing in ingredients:
-                product_id = ing.get("product_id")
-                amount = float(ing.get("amount") or 0)
-                unit = ing.get("unit")
-                piece_grams = float(ing.get("piece_grams") or 0)
-                if product_id and amount > 0:
-                    RecipeIngredient.objects.create(
-                        recipe=recipe,
-                        product_id=product_id,
-                        amount=amount,
-                        unit=unit,
-                        piece_grams=piece_grams,
-                    )
+                RecipeIngredient.objects.create(recipe=recipe, **ing)
             return redirect("recipe_list")
     else:
         form = RecipeForm()
@@ -63,24 +83,13 @@ def recipe_edit(request, pk):
             recipe.ingredients.all().delete()
 
             ingredients_raw = request.POST.get("ingredients_json", "[]")
-            try:
-                ingredients = json.loads(ingredients_raw)
-            except:
-                ingredients = []
+            ingredients = _parse_recipe_ingredients(ingredients_raw)
+            if ingredients is None:
+                form.add_error(None, "Некорректный формат списка ингредиентов.")
+                return render(request, "recipes/recipe_form.html", {"form": form, "ingredients_json": ingredients_raw})
 
             for ing in ingredients:
-                product_id = ing.get("product_id")
-                amount = float(ing.get("amount") or 0)
-                unit = ing.get("unit")
-                piece_grams = float(ing.get("piece_grams") or 0)
-                if product_id and amount > 0:
-                    RecipeIngredient.objects.create(
-                        recipe=recipe,
-                        product_id=product_id,
-                        amount=amount,
-                        unit=unit,
-                        piece_grams=piece_grams,
-                    )
+                RecipeIngredient.objects.create(recipe=recipe, **ing)
             return redirect("recipe_list")
     else:
         form = RecipeForm(instance=recipe)

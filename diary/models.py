@@ -1,4 +1,7 @@
+from datetime import date, time
+
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 from products.models import FoodProduct
@@ -13,8 +16,8 @@ MEAL_CHOICES = [
 
 class DiaryEntry(models.Model):
     user  = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
-    date  = models.DateField()
-    time  = models.TimeField()
+    date  = models.DateField(default=date.today)
+    time  = models.TimeField(default=time(hour=12))
     meal  = models.CharField(max_length=16, choices=MEAL_CHOICES, default="breakfast")
 
     # либо продукт, либо рецепт (ровно один)
@@ -34,12 +37,22 @@ class DiaryEntry(models.Model):
     class Meta:
         ordering = ["-date","-time"]
         indexes = [models.Index(fields=["user","date"])]
+        constraints = [
+            models.CheckConstraint(
+                condition=(
+                    models.Q(product__isnull=False, recipe__isnull=True)
+                    | models.Q(product__isnull=True, recipe__isnull=False)
+                ),
+                name="diary_entry_exactly_one_source",
+            ),
+        ]
 
     def clean(self):
         # простая валидация: выбран один источник
         if bool(self.product) == bool(self.recipe):
-            from django.core.exceptions import ValidationError
             raise ValidationError("Нужно выбрать либо продукт, либо блюдо (рецепт).")
+        if self.grams < 0 or self.servings < 0:
+            raise ValidationError("Вес и количество порций не могут быть отрицательными.")
 
     def _calc_from_product(self):
         g = max(self.grams, 0.0)
@@ -65,6 +78,7 @@ class DiaryEntry(models.Model):
         self.total_carbs   = self.recipe.total_carbs   * g / tw
 
     def save(self, *args, **kwargs):
+        self.full_clean()
         # авторасчёт перед сохранением
         if self.product:
             self._calc_from_product()
@@ -111,6 +125,25 @@ class PlannedMeal(models.Model):
 
     class Meta:
         ordering = ['date', 'time']
+        constraints = [
+            models.CheckConstraint(
+                condition=(
+                    models.Q(product__isnull=False, recipe__isnull=True)
+                    | models.Q(product__isnull=True, recipe__isnull=False)
+                ),
+                name="planned_meal_exactly_one_source",
+            ),
+        ]
+
+    def clean(self):
+        if bool(self.product) == bool(self.recipe):
+            raise ValidationError("Нужно выбрать либо продукт, либо блюдо (рецепт).")
+        if self.grams < 0 or self.servings < 0:
+            raise ValidationError("Вес и количество порций не могут быть отрицательными.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user} — {self.date} {self.meal_type}"
