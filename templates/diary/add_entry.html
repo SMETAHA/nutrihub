@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}Добавить запись{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Add diary entry" %}{% endblock %}
 
 {% block content %}
 
 <!-- 📅 Навигация по датам -->
 <h2 style="display:flex;align-items:center;gap:10px;">
   <button id="prev-day" class="btn">←</button>
-  Дневник — <span id="entry-date-label" data-iso="{{ default_day|date:'Y-m-d' }}">
+  {% translate "Diary" %} — <span id="entry-date-label" data-iso="{{ default_day|date:'Y-m-d' }}">
     {{ default_day|date:"d E Y" }}
   </span>
   <button id="next-day" class="btn">→</button>
@@ -15,8 +16,8 @@
 <!-- 🧭 Быстрый выбор даты -->
 <div class="planner-toolbar" style="margin: 10px 0; display: flex; gap: 10px; flex-wrap: wrap;">
   <input type="date" id="entry-date-input" value="{{ default_day|date:'Y-m-d' }}">
-  <button id="today-btn" class="btn pill">Сегодня</button>
-  <button id="tomorrow-btn" class="btn pill">Завтра</button>
+  <button id="today-btn" class="btn pill">{% translate "Today" %}</button>
+  <button id="tomorrow-btn" class="btn pill">{% translate "Tomorrow" %}</button>
 </div>
 
 <!-- 📝 Форма добавления записи -->
@@ -24,32 +25,32 @@
   {% csrf_token %}
   <input type="hidden" name="date" id="form-date" value="{{ default_day|date:'Y-m-d' }}">
 
-  <label>⏰ Время приёма пищи</label>
+  <label>⏰ {% translate "Meal time" %}</label>
   <input type="time" name="time" value="12:00" required>
 
-  <label>Тип приёма</label>
+  <label>{% translate "Meal type" %}</label>
   <select name="meal">
-    <option value="breakfast">Завтрак</option>
-    <option value="lunch">Обед</option>
-    <option value="dinner">Ужин</option>
-    <option value="snack">Перекус</option>
+    <option value="breakfast">{% translate "Breakfast" %}</option>
+    <option value="lunch">{% translate "Lunch" %}</option>
+    <option value="dinner">{% translate "Dinner" %}</option>
+    <option value="snack">{% translate "Snack" %}</option>
   </select>
 
-  <label>Категория</label>
+  <label>{% translate "Category" %}</label>
   <select name="category" id="category" required>
-    <option value="">— Выберите —</option>
-    <option value="product">Продукт</option>
-    <option value="recipe">Блюдо</option>
+    <option value="">— {% translate "Select" %} —</option>
+    <option value="product">{% translate "Product" %}</option>
+    <option value="recipe">{% translate "Recipe" %}</option>
   </select>
 
-  <label>Название</label>
+  <label>{% translate "Name" %}</label>
   <select name="item_id" id="item">
-    <optgroup label="Продукты" id="grp-products" style="display:none;">
+    <optgroup label="{% translate 'Products' %}" id="grp-products" style="display:none;">
       {% for p in products %}
       <option value="{{ p.id }}">{{ p.name }}</option>
       {% endfor %}
     </optgroup>
-    <optgroup label="Рецепты" id="grp-recipes" style="display:none;">
+    <optgroup label="{% translate 'Recipes' %}" id="grp-recipes" style="display:none;">
       {% for r in recipes %}
       <option value="{{ r.id }}">{{ r.name }}</option>
       {% endfor %}
@@ -57,30 +58,30 @@
   </select>
 
   <div id="qty-grams" style="display:none;">
-    <label>Количество (г)</label>
+    <label>{% translate "Amount (g)" %}</label>
     <input type="number" name="grams" id="grams" min="1" step="1">
   </div>
 
   <div id="qty-servings" style="display:none;">
-    <label>Порций</label>
+    <label>{% translate "Servings" %}</label>
     <input type="number" name="servings" id="servings" min="0.1" step="0.1">
-    <small>Для блюд можно указать либо порции, либо граммы.</small>
+    <small>{% translate "For recipes, enter servings or grams." %}</small>
   </div>
 
-  <label>Заметка (опционально)</label>
-  <input type="text" name="note" maxlength="240" placeholder="Например: после тренировки">
+  <label>{% translate "Note (optional)" %}</label>
+  <input type="text" name="note" maxlength="240" placeholder="{% translate 'For example: after a workout' %}">
 
   <div class="card mt">
-    <strong>Предпросмотр:</strong>
+    <strong>{% translate "Preview:" %}</strong>
     <div id="preview" class="muted">—</div>
   </div>
 
-  <button class="btn-primary mt" type="submit">💾 Сохранить</button>
+  <button class="btn-primary mt" type="submit">💾 {% translate "Save" %}</button>
 </form>
 
 <!-- ⏪ Возврат в дневник -->
 <div style="margin-top: 20px; display:flex; justify-content:center;">
-  <a href="/diary/?date={{ default_day|date:'Y-m-d' }}" class="btn pill">← Вернуться в дневник</a>
+  <a href="/diary/?date={{ default_day|date:'Y-m-d' }}" class="btn pill">← {% translate "Back to diary" %}</a>
 </div>
 
 <script>
@@ -126,10 +127,10 @@
     try {
       const r = await fetch(url);
       const d = await r.json();
-      preview.textContent = `${d.kcal.toFixed(0)} ккал · Б ${d.protein.toFixed(1)} г · Ж ${d.fat.toFixed(1)} г · У ${d.carbs.toFixed(1)} г`;
+      preview.textContent = `${d.kcal.toFixed(0)} kcal · P ${d.protein.toFixed(1)} g · F ${d.fat.toFixed(1)} g · C ${d.carbs.toFixed(1)} g`;
     } catch (e) {
       console.error(e);
-      preview.textContent = 'Ошибка загрузки';
+      preview.textContent = '{% translate "Loading failed" %}';
     }
   }
 
@@ -147,7 +148,7 @@
     dateLabel.dataset.iso = iso;
     const d = new Date(iso);
     // Красивый формат
-    const formatted = d.toLocaleDateString('ru-RU', {
+    const formatted = d.toLocaleDateString('{{ LANGUAGE_CODE }}', {
       day: 'numeric', month: 'long', year: 'numeric'
     });
     dateLabel.textContent = formatted;

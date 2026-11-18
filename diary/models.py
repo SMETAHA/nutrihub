@@ -4,14 +4,15 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 from products.models import FoodProduct
 from recipes.models import Recipe
 
 MEAL_CHOICES = [
-    ("breakfast","Завтрак"),
-    ("lunch","Обед"),
-    ("dinner","Ужин"),
-    ("snack","Перекус"),
+    ("breakfast", _("Breakfast")),
+    ("lunch", _("Lunch")),
+    ("dinner", _("Dinner")),
+    ("snack", _("Snack")),
 ]
 
 class DiaryEntry(models.Model):
@@ -106,10 +107,10 @@ class WeightLog(models.Model):
 
 class PlannedMeal(models.Model):
     MEAL_TYPES = [
-        ('breakfast', 'Завтрак'),
-        ('lunch', 'Обед'),
-        ('dinner', 'Ужин'),
-        ('snack', 'Перекус'),
+        ('breakfast', _('Breakfast')),
+        ('lunch', _('Lunch')),
+        ('dinner', _('Dinner')),
+        ('snack', _('Snack')),
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

@@ -1,23 +1,24 @@
 {% extends 'base.html' %}
-{% block title %}Главная{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Home" %}{% endblock %}
 {% block content %}
 <section class="hero">
-  <h1>Следи за питанием. Достигай цели. Вдохновляй друзей.</h1>
-  <p>Минималистичный и мощный трекер калорий с социальной лентой.</p>
+  <h1>{% translate "Track your nutrition. Reach your goals. Inspire your friends." %}</h1>
+  <p>{% translate "A simple yet powerful calorie tracker with a social feed." %}</p>
   <div class="cta">
     {% if user.is_authenticated %}
-      <a class="btn btn-primary" href="/dashboard/">Перейти в кабинет</a>
+      <a class="btn btn-primary" href="/dashboard/">{% translate "Open dashboard" %}</a>
     {% else %}
-      <a class="btn btn-primary" href="/accounts/register/">Начать бесплатно</a>
-      <a class="btn" href="/accounts/login/">У меня уже есть аккаунт</a>
+      <a class="btn btn-primary" href="/accounts/register/">{% translate "Get started for free" %}</a>
+      <a class="btn" href="/accounts/login/">{% translate "I already have an account" %}</a>
     {% endif %}
   </div>
 </section>
 
 <section class="features">
-  <div class="card">📈 Графики прогресса</div>
-  <div class="card">🧮 Авто‑расчёты TDEE/BMR</div>
-  <div class="card">🧺 База продуктов и рецептов</div>
-  <div class="card">🤝 Друзья и реакции</div>
+  <div class="card">📈 {% translate "Progress charts" %}</div>
+  <div class="card">🧮 {% translate "Automatic TDEE/BMR calculations" %}</div>
+  <div class="card">🧺 {% translate "Food and recipe library" %}</div>
+  <div class="card">🤝 {% translate "Friends and reactions" %}</div>
 </section>
 {% endblock %}

@@ -1,81 +1,82 @@
 {% extends 'base.html' %}
-{% block title %}Калькулятор BMR / TDEE{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "BMR / TDEE calculator" %}{% endblock %}
 {% block content %}
 
-<h2>Калькулятор BMR / TDEE</h2>
+<h2>{% translate "BMR / TDEE calculator" %}</h2>
 
 <form method="post" class="form-grid">
   {% csrf_token %}
 
   <div class="card">
-    <h3>Данные</h3>
+    <h3>{% translate "Your details" %}</h3>
 
-    <label>Метод BMR</label>
+    <label>{% translate "BMR method" %}</label>
     <select name="bmr_method">
       <option value="mifflin" {% if selected_method == 'mifflin' %}selected{% endif %}>Mifflin-St Jeor</option>
       <option value="harris" {% if selected_method == 'harris' %}selected{% endif %}>Harris-Benedict</option>
-      <option value="katch" {% if selected_method == 'katch' %}selected{% endif %}>Katch-McArdle (по LBM)</option>
-      <option value="cunningham" {% if selected_method == 'cunningham' %}selected{% endif %}>Cunningham (по LBM)</option>
+      <option value="katch" {% if selected_method == 'katch' %}selected{% endif %}>Katch-McArdle (lean mass)</option>
+      <option value="cunningham" {% if selected_method == 'cunningham' %}selected{% endif %}>Cunningham (lean mass)</option>
     </select>
 
-    <label>Рост (см)</label>
+    <label>{% translate "Height (cm)" %}</label>
     <input type="number" name="height_cm" value="{{ profile.height_cm|default:'' }}">
 
-    <label>Возраст</label>
+    <label>{% translate "Age" %}</label>
     <input type="number" name="age" value="{{ age|default:'' }}">
 
-    <label>Пол</label>
+    <label>{% translate "Sex" %}</label>
     <select name="sex">
-      <option value="Мужской" {% if profile.sex == 'male,Мужской' %}selected{% endif %}>Мужской</option>
-      <option value="Женский" {% if profile.sex == 'female,Женский' %}selected{% endif %}>Женский</option>
+      <option value="male" {% if profile.sex == 'male' %}selected{% endif %}>{% translate "Male" %}</option>
+      <option value="female" {% if profile.sex == 'female' %}selected{% endif %}>{% translate "Female" %}</option>
     </select>
   </div>
 
   <div class="card">
-    <h3>Вес и цели</h3>
+    <h3>{% translate "Weight and goals" %}</h3>
 
-    <label>Вес (кг)</label>
+    <label>{% translate "Weight (kg)" %}</label>
     <input type="number" step="0.1" name="weight_kg" value="{{ profile.current_weight_kg|default:'' }}">
 
-    <label>Активность</label>
+    <label>{% translate "Activity level" %}</label>
     <select name="activity_level">
-      <option value="sedentary" {% if profile.activity_level == 'sedentary' %}selected{% endif %}>Сидячий</option>
-      <option value="light" {% if profile.activity_level == 'light' %}selected{% endif %}>Лёгкая</option>
-      <option value="moderate" {% if profile.activity_level == 'moderate' %}selected{% endif %}>Средняя</option>
-      <option value="active" {% if profile.activity_level == 'active' %}selected{% endif %}>Активная</option>
-      <option value="very_active" {% if profile.activity_level == 'very_active' %}selected{% endif %}>Очень активная</option>
+      <option value="sedentary" {% if profile.activity_level == 'sedentary' %}selected{% endif %}>{% translate "Sedentary" %}</option>
+      <option value="light" {% if profile.activity_level == 'light' %}selected{% endif %}>{% translate "Light" %}</option>
+      <option value="moderate" {% if profile.activity_level == 'moderate' %}selected{% endif %}>{% translate "Moderate" %}</option>
+      <option value="active" {% if profile.activity_level == 'active' %}selected{% endif %}>{% translate "Active" %}</option>
+      <option value="very_active" {% if profile.activity_level == 'very_active' %}selected{% endif %}>{% translate "Very active" %}</option>
     </select>
 
-    <label>Цель</label>
+    <label>{% translate "Goal" %}</label>
     <select name="goal_type">
-      <option value="maintain" {% if profile.goal_type == 'maintain' %}selected{% endif %}>Поддержание</option>
-      <option value="lose" {% if profile.goal_type == 'lose' %}selected{% endif %}>Снижение веса</option>
-      <option value="gain" {% if profile.goal_type == 'gain' %}selected{% endif %}>Набор массы</option>
+      <option value="maintain" {% if profile.goal_type == 'maintain' %}selected{% endif %}>{% translate "Maintain weight" %}</option>
+      <option value="lose" {% if profile.goal_type == 'lose' %}selected{% endif %}>{% translate "Lose weight" %}</option>
+      <option value="gain" {% if profile.goal_type == 'gain' %}selected{% endif %}>{% translate "Gain weight" %}</option>
     </select>
 
-    <label>Скорость изменения (кг/нед)</label>
+    <label>{% translate "Weekly change (kg)" %}</label>
     <input type="number" step="0.1" name="weekly_delta_kg" value="{{ profile.weekly_delta_kg|default:'0.5' }}">
   </div>
 
   <div style="grid-column: 1 / -1; text-align: center;">
-    <button type="submit" class="btn-primary">Рассчитать</button>
-    <button type="submit" name="save" value="1" class="btn">Сохранить в профиль</button>
+    <button type="submit" class="btn-primary">{% translate "Calculate" %}</button>
+    <button type="submit" name="save" value="1" class="btn">{% translate "Save to profile" %}</button>
   </div>
 </form>
 
 {% if result %}
 <div class="card mt">
-  <h3>Результаты</h3>
+  <h3>{% translate "Results" %}</h3>
   <div class="result-grid">
-    <div><strong>BMR</strong> {{ result.BMR|default:"—" }} ккал/д</div>
-    <div><strong>TDEE</strong> {{ result.TDEE|default:"—" }} ккал/д</div>
-    <div><strong>Цель</strong> {{ result.target_real|default:result.target|default:"—" }} ккал/д</div>
+    <div><strong>BMR</strong> {{ result.BMR|default:"—" }} kcal/day</div>
+    <div><strong>TDEE</strong> {{ result.TDEE|default:"—" }} kcal/day</div>
+    <div><strong>{% translate "Target" %}</strong> {{ result.target_real|default:result.target|default:"—" }} kcal/day</div>
   </div>
 
   {% if result.target or result.target_real %}
     {% with tgt=result.target_real|default:result.target %}
     <div class="progress-wrap mt">
-      <div class="progress-label">Целевая норма (визуализация)</div>
+      <div class="progress-label">{% translate "Target intake (visualization)" %}</div>
       <div class="progress-bar" data-value="{{ tgt|floatformat:0 }}"></div>
     </div>
     {% endwith %}
@@ -83,8 +84,8 @@
 
   {% if result.macros %}
     <div class="mt">
-      <strong>Рекомендуемые БЖУ:</strong>
-      белки {{ result.macros.protein_g }} г · жиры {{ result.macros.fat_g }} г · углеводы {{ result.macros.carbs_g }} г
+      <strong>{% translate "Recommended macros:" %}</strong>
+      {% translate "Protein" %} {{ result.macros.protein_g }} g · {% translate "Fat" %} {{ result.macros.fat_g }} g · {% translate "Carbs" %} {{ result.macros.carbs_g }} g
     </div>
   {% endif %}
 </div>

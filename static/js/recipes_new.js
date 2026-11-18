@@ -2,6 +2,7 @@ console.log("🍳 recipes_new.js loaded");
 
 let ingredients = [];
 let selectedProduct = null;
+const messages = document.getElementById("recipe-i18n")?.dataset || {};
 
 // Если редактирование — парсим JSON из скрытого поля
 const ingredientsField = document.getElementById("ingredients_json");
@@ -33,10 +34,10 @@ function renderList() {
       <div class="left">
         <span>🥄</span>
         <span><b>${ing.name}</b></span>
-        <span class="pill">${ing.amount}${ing.unit}${ing.unit === 'pcs' && ing.piece_grams ? ` · ${ing.piece_grams} г/шт` : ''}</span>
-        <span class="kcal">(${Math.round(kcal)} ккал)</span>
+        <span class="pill">${ing.amount}${ing.unit}${ing.unit === 'pcs' && ing.piece_grams ? ` · ${ing.piece_grams} ${messages.piece || 'g/piece'}` : ''}</span>
+        <span class="kcal">(${Math.round(kcal)} ${messages.kcal || 'kcal'})</span>
       </div>
-      <button type="button" class="del-ing" data-i="${i}" title="Удалить">✕</button>
+      <button type="button" class="del-ing" data-i="${i}" title="${messages.delete || 'Delete'}">✕</button>
     `;
     list.appendChild(row);
   });
@@ -51,7 +52,7 @@ function renderResults(items) {
   for (const item of items) {
     const div = document.createElement("div");
     div.className = "result-item";
-    div.textContent = `${item.name} (${item.kcal} ккал)`;
+    div.textContent = `${item.name} (${item.kcal} ${messages.kcal || 'kcal'})`;
     div.onclick = () => {
       selectedProduct = item;
       searchInput.value = item.name;
@@ -81,9 +82,9 @@ unitSelect.addEventListener("change", () => {
 });
 
 document.getElementById("add-ingredient").addEventListener("click", () => {
-  if (!selectedProduct) return alert("Выберите продукт");
+  if (!selectedProduct) return alert(messages.selectProduct || "Select a product");
   const amount = parseFloat(amountInput.value) || 0;
-  if (amount <= 0) return alert("Укажите количество");
+  if (amount <= 0) return alert(messages.enterAmount || "Enter an amount");
 
   ingredients.push({
     product_id: selectedProduct.id,

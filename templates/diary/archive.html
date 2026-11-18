@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 {% load diary_extras %}
+{% load i18n %}
 
-{% block title %}Архив дневника{% endblock %}
+{% block title %}{% translate "Diary archive" %}{% endblock %}
 {% block content %}
 
-<h2>🍽️ Архив дневника — {{ month_name }} {{ year }}</h2>
+<h2>🍽️ {% translate "Diary archive" %} — {{ month_name }} {{ year }}</h2>
 
 <!-- 📤 Блок экспорта месяца -->
 <div class="export-actions">
-  <a href="{% url 'export_month_csv' year month %}" class="btn small">📤 Экспорт месяца (CSV)</a>
+  <a href="{% url 'export_month_csv' year month %}" class="btn small">📤 {% translate "Export month (CSV)" %}</a>
   <a href="{% url 'export_month_pdf' year month %}" class="btn small">PDF</a>
 </div>
 
@@ -19,13 +20,13 @@
 </div>
 
 <div class="calendar-grid">
-  <div class="calendar-header">Пн</div>
-  <div class="calendar-header">Вт</div>
-  <div class="calendar-header">Ср</div>
-  <div class="calendar-header">Чт</div>
-  <div class="calendar-header">Пт</div>
-  <div class="calendar-header">Сб</div>
-  <div class="calendar-header">Вс</div>
+  <div class="calendar-header">{% translate "Mon" %}</div>
+  <div class="calendar-header">{% translate "Tue" %}</div>
+  <div class="calendar-header">{% translate "Wed" %}</div>
+  <div class="calendar-header">{% translate "Thu" %}</div>
+  <div class="calendar-header">{% translate "Fri" %}</div>
+  <div class="calendar-header">{% translate "Sat" %}</div>
+  <div class="calendar-header">{% translate "Sun" %}</div>
 
   {% for day in month_days %}
     <div class="calendar-cell {% if day == today %}today{% endif %} {% if day.month != month %}dimmed{% endif %}"
@@ -44,7 +45,7 @@
 
 {% if planned_meals %}
 <div class="card mt">
-  <h3>🧭 Запланировано на {{ day|date:"d E Y" }}</h3>
+  <h3>🧭 {% translate "Planned for" %} {{ day|date:"d E Y" }}</h3>
   <ul>
     {% for pm in planned_meals %}
       <li>
@@ -64,7 +65,7 @@
     <span class="close">&times;</span>
     <h3 id="modal-date"></h3>
     <div id="modal-content-body">
-      Загрузка...
+      {% translate "Loading..." %}
     </div>
   </div>
 </div>
@@ -121,7 +122,7 @@ document.querySelector('#dayModal .close').addEventListener('click', () => {
     // Удаление записи без перезагрузки
     body.querySelectorAll('.js-diary-delete').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if (!confirm('Удалить запись?')) return;
+        if (!confirm(document.body.dataset.deleteEntryConfirm)) return;
         const url = btn.dataset.url;
         const res = await fetch(url, { method: 'DELETE', headers: { 'X-CSRFToken': getCookie('csrftoken') }});
         if (res.ok) {
@@ -130,7 +131,7 @@ document.querySelector('#dayModal .close').addEventListener('click', () => {
           const iso = h2.getAttribute('data-iso') || h2.dataset.iso;
           loadDay(iso);
         } else {
-          alert('Не удалось удалить запись.');
+          alert(document.body.dataset.deleteEntryError);
         }
       });
     });

@@ -1,0 +1,980 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: NutriHub\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-18 18:53+0100\n"
+"PO-Revision-Date: 2026-11-18 00:00+0000\n"
+"Last-Translator: NutriHub contributors\n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: accounts/forms.py:27 templates/core/settings.html:14
+msgid "About you"
+msgstr "О вас"
+
+#: accounts/forms.py:28 templates/core/settings.html:17
+msgid "Avatar"
+msgstr "Аватар"
+
+#: accounts/forms.py:29 templates/core/calculator.html:28
+#: templates/core/settings.html:20
+msgid "Sex"
+msgstr "Пол"
+
+#: accounts/forms.py:30 templates/core/settings.html:23
+msgid "Date of birth"
+msgstr "Дата рождения"
+
+#: accounts/forms.py:31 templates/core/calculator.html:22
+#: templates/core/settings.html:30
+msgid "Height (cm)"
+msgstr "Рост (см)"
+
+#: accounts/forms.py:32 templates/core/settings.html:33
+msgid "Starting weight (kg)"
+msgstr "Начальный вес (кг)"
+
+#: accounts/forms.py:33 templates/core/settings.html:36
+msgid "Current weight (kg)"
+msgstr "Текущий вес (кг)"
+
+#: accounts/forms.py:34 templates/core/settings.html:39
+msgid "Target weight (kg)"
+msgstr "Целевой вес (кг)"
+
+#: accounts/forms.py:35 templates/core/settings.html:42
+msgid "Waist (cm)"
+msgstr "Талия (см)"
+
+#: accounts/forms.py:36 templates/core/settings.html:45
+msgid "Neck (cm)"
+msgstr "Шея (см)"
+
+#: accounts/forms.py:37 templates/core/settings.html:48
+msgid "Hips (cm)"
+msgstr "Бёдра (см)"
+
+#: accounts/forms.py:38
+msgid "Body fat (%)"
+msgstr "Процент жира в организме (%)"
+
+#: accounts/forms.py:39 templates/core/calculator.html:41
+#: templates/core/settings.html:58
+msgid "Activity level"
+msgstr "Уровень активности"
+
+#: accounts/forms.py:40 templates/core/calculator.html:50
+#: templates/core/settings.html:61
+msgid "Goal"
+msgstr "Цель"
+
+#: accounts/forms.py:41 templates/core/calculator.html:57
+#: templates/core/settings.html:64
+msgid "Weekly change (kg)"
+msgstr "Изменение веса за неделю (кг)"
+
+#: accounts/forms.py:42 templates/core/settings.html:67
+msgid "Macro mode"
+msgstr "Режим макронутриентов"
+
+#: accounts/forms.py:43 templates/core/settings.html:74
+msgid "Interface theme"
+msgstr "Тема интерфейса"
+
+#: accounts/forms.py:46
+msgid "Measure around the narrowest part of your waist."
+msgstr "Измерьте обхват в самой узкой части талии."
+
+#: accounts/forms.py:47
+msgid "Measure at the base of your neck."
+msgstr "Измерьте обхват у основания шеи."
+
+#: accounts/forms.py:48
+msgid "Measure around the widest part of your hips."
+msgstr "Измерьте обхват в самой широкой части бёдер."
+
+#: accounts/forms.py:49
+msgid "Enter if known to improve BMR estimates."
+msgstr ""
+"Укажите значение, если оно известно, чтобы повысить точность расчёта "
+"основного обмена."
+
+#: accounts/models.py:6 templates/core/calculator.html:30
+msgid "Male"
+msgstr "Мужской"
+
+#: accounts/models.py:6 templates/core/calculator.html:31
+msgid "Female"
+msgstr "Женский"
+
+#: accounts/models.py:8 templates/core/calculator.html:43
+msgid "Sedentary"
+msgstr "Малоподвижный"
+
+#: accounts/models.py:9 accounts/models.py:15 templates/core/calculator.html:44
+msgid "Light"
+msgstr "Низкая"
+
+#: accounts/models.py:10 templates/core/calculator.html:45
+msgid "Moderate"
+msgstr "Умеренная"
+
+#: accounts/models.py:11 templates/core/calculator.html:46
+msgid "Active"
+msgstr "Высокая"
+
+#: accounts/models.py:12 templates/core/calculator.html:47
+msgid "Very active"
+msgstr "Очень высокая"
+
+#: accounts/models.py:14 templates/core/calculator.html:53
+msgid "Lose weight"
+msgstr "Снижение веса"
+
+#: accounts/models.py:14 templates/core/calculator.html:52
+msgid "Maintain weight"
+msgstr "Поддержание веса"
+
+#: accounts/models.py:14 templates/core/calculator.html:54
+msgid "Gain weight"
+msgstr "Набор веса"
+
+#: accounts/models.py:15
+msgid "Automatic"
+msgstr "Автоматически"
+
+#: accounts/models.py:15
+msgid "Dark"
+msgstr "Тёмная"
+
+#: accounts/models.py:37
+msgid "Standard"
+msgstr "Стандартный"
+
+#: accounts/models.py:37
+msgid "Athlete"
+msgstr "Спортивный"
+
+#: diary/forms.py:16 templates/diary/add_entry.html:28
+msgid "Meal time"
+msgstr "Время приёма пищи"
+
+#: diary/forms.py:17 templates/diary/add_entry.html:42
+#: templates/planner/planner.html:39
+msgid "Product"
+msgstr "Продукт"
+
+#: diary/forms.py:18 templates/diary/add_entry.html:43
+#: templates/planner/planner.html:40 templates/recipes/recipe_form.html:4
+msgid "Recipe"
+msgstr "Рецепт"
+
+#: diary/forms.py:19
+msgid "Weight (g)"
+msgstr "Вес (г)"
+
+#: diary/forms.py:20 recipes/forms.py:14 templates/diary/add_entry.html:66
+#: templates/planner/planner.html:60 templates/recipes/recipe_list.html:21
+msgid "Servings"
+msgstr "Порции"
+
+#: diary/forms.py:21 templates/planner/planner.html:84
+msgid "Note"
+msgstr "Заметка"
+
+#: diary/forms.py:29
+msgid "Select either a product or a recipe."
+msgstr "Выберите продукт или рецепт."
+
+#: diary/forms.py:31
+msgid "Select a product or a recipe, not both."
+msgstr "Выберите продукт или рецепт, но не оба варианта."
+
+#: diary/forms.py:44
+msgid "Date"
+msgstr "Дата"
+
+#: diary/forms.py:45 templates/core/calculator.html:38
+msgid "Weight (kg)"
+msgstr "Вес (кг)"
+
+#: diary/models.py:12 diary/models.py:110 templates/diary/add_entry.html:33
+#: templates/planner/planner.html:28
+msgid "Breakfast"
+msgstr "Завтрак"
+
+#: diary/models.py:13 diary/models.py:111 templates/diary/add_entry.html:34
+#: templates/planner/planner.html:29
+msgid "Lunch"
+msgstr "Обед"
+
+#: diary/models.py:14 diary/models.py:112 templates/diary/add_entry.html:35
+#: templates/planner/planner.html:30
+msgid "Dinner"
+msgstr "Ужин"
+
+#: diary/models.py:15 diary/models.py:113 templates/diary/add_entry.html:36
+#: templates/planner/planner.html:31
+msgid "Snack"
+msgstr "Перекус"
+
+#: products/forms.py:15 recipes/forms.py:13 templates/diary/add_entry.html:46
+#: templates/diary/day_details.html:127 templates/planner/planner.html:82
+#: templates/products/list.html:46
+msgid "Name"
+msgstr "Название"
+
+#: products/forms.py:16
+msgid "Brand"
+msgstr "Бренд"
+
+#: products/forms.py:17
+msgid "Calories per 100 g"
+msgstr "Калорийность на 100 г"
+
+#: products/forms.py:18
+msgid "Protein per 100 g"
+msgstr "Белки на 100 г"
+
+#: products/forms.py:19
+msgid "Fat per 100 g"
+msgstr "Жиры на 100 г"
+
+#: products/forms.py:20
+msgid "Carbohydrates per 100 g"
+msgstr "Углеводы на 100 г"
+
+#: products/forms.py:21
+msgid "Fiber per 100 g"
+msgstr "Клетчатка на 100 г"
+
+#: products/forms.py:22
+msgid "Sugar per 100 g"
+msgstr "Сахар на 100 г"
+
+#: products/forms.py:23
+msgid "Sodium per 100 g (mg)"
+msgstr "Натрий на 100 г (мг)"
+
+#: products/forms.py:24
+msgid "Potassium per 100 g (mg)"
+msgstr "Калий на 100 г (мг)"
+
+#: products/forms.py:25 recipes/forms.py:17
+msgid "Tags (comma-separated)"
+msgstr "Теги (через запятую)"
+
+#: products/forms.py:26
+msgid "Public product"
+msgstr "Публичный продукт"
+
+#: products/views.py:116
+msgid "This product is used in your diary or recipes and cannot be deleted."
+msgstr "Этот продукт используется в дневнике или рецептах и не может быть удалён."
+
+#: recipes/forms.py:15
+msgid "Instructions"
+msgstr "Инструкция"
+
+#: recipes/forms.py:16
+msgid "Photo"
+msgstr "Фото"
+
+#: recipes/forms.py:18
+msgid "Public recipe"
+msgstr "Публичный рецепт"
+
+#: recipes/forms.py:21
+msgid "Recipe name"
+msgstr "Название рецепта"
+
+#: recipes/forms.py:23
+msgid "Describe the cooking steps"
+msgstr "Опишите этапы приготовления"
+
+#: recipes/forms.py:24
+msgid "e.g. breakfast, pasta"
+msgstr "например: завтрак, паста"
+
+#: socialfeed/forms.py:9
+msgid "Your post"
+msgstr "Ваша публикация"
+
+#: socialfeed/forms.py:10
+msgid "Share your progress or a recipe..."
+msgstr "Поделитесь своими успехами или рецептом..."
+
+#: templates/accounts/login.html:3 templates/accounts/login.html:5
+#: templates/accounts/login.html:9 templates/base.html:49
+msgid "Log in"
+msgstr "Войти"
+
+#: templates/accounts/login.html:11
+msgid "Don't have an account?"
+msgstr "Нет аккаунта?"
+
+#: templates/accounts/login.html:11 templates/accounts/register.html:3
+#: templates/base.html:50
+msgid "Sign up"
+msgstr "Зарегистрироваться"
+
+#: templates/accounts/profile.html:3
+msgid "Profile"
+msgstr "Профиль"
+
+#: templates/accounts/profile.html:8
+msgid "Profile avatar"
+msgstr "Аватар профиля"
+
+#: templates/accounts/profile.html:12
+msgid "Add friend"
+msgstr "Добавить в друзья"
+
+#: templates/accounts/register.html:5
+msgid "Create your account"
+msgstr "Создайте аккаунт"
+
+#: templates/accounts/register.html:9
+msgid "Create account"
+msgstr "Создать аккаунт"
+
+#: templates/base.html:19
+#, fuzzy
+#| msgid "Delete this recipe?"
+msgid "Delete this entry?"
+msgstr "Удалить этот рецепт?"
+
+#: templates/base.html:20
+msgid "Could not delete the entry."
+msgstr "Не удалось удалить запись."
+
+#: templates/base.html:21 templates/planner/planner.html:68
+#: templates/planner/planner.html:71 templates/recipes/recipe_form.html:18
+msgid "kcal"
+msgstr "ккал"
+
+#: templates/base.html:22 templates/core/calculator.html:88
+#: templates/core/dashboard.html:84 templates/core/dashboard.html:116
+#: templates/planner/planner.html:69 templates/planner/planner.html:71
+#: templates/products/list.html:21 templates/products/list.html:48
+msgid "Protein"
+msgstr "Белки"
+
+#: templates/base.html:23 templates/core/calculator.html:88
+#: templates/core/dashboard.html:84 templates/core/dashboard.html:117
+#: templates/planner/planner.html:70 templates/planner/planner.html:71
+#: templates/products/list.html:22 templates/products/list.html:49
+msgid "Fat"
+msgstr "Жиры"
+
+#: templates/base.html:24 templates/core/calculator.html:88
+#: templates/core/dashboard.html:84 templates/core/dashboard.html:118
+#: templates/planner/planner.html:71
+msgid "Carbs"
+msgstr "Углеводы"
+
+#: templates/base.html:25
+#, fuzzy
+#| msgid "Fat per 100 g"
+msgid "Per 100 g"
+msgstr "Жиры на 100 г"
+
+#: templates/base.html:26 templates/planner/planner.html:102
+msgid "No meals planned yet."
+msgstr "Приёмы пищи пока не запланированы."
+
+#: templates/base.html:29
+msgid "Menu"
+msgstr "Меню"
+
+#: templates/base.html:36 templates/base.html:70
+#: templates/core/dashboard.html:3
+msgid "Dashboard"
+msgstr "Панель управления"
+
+#: templates/base.html:37 templates/base.html:71
+#: templates/diary/add_entry.html:10
+msgid "Diary"
+msgstr "Дневник"
+
+#: templates/base.html:39 templates/base.html:73
+#: templates/diary/day_details.html:56
+msgid "Planner"
+msgstr "Планировщик"
+
+#: templates/base.html:41 templates/base.html:76
+#: templates/diary/add_entry.html:48 templates/planner/planner.html:45
+#: templates/products/list.html:4 templates/products/list.html:7
+msgid "Products"
+msgstr "Продукты"
+
+#: templates/base.html:42 templates/base.html:77
+#: templates/diary/add_entry.html:53 templates/planner/planner.html:50
+#: templates/recipes/recipe_list.html:3
+msgid "Recipes"
+msgstr "Рецепты"
+
+#: templates/base.html:43 templates/base.html:78 templates/social/feed.html:3
+msgid "Feed"
+msgstr "Лента"
+
+#: templates/base.html:44 templates/base.html:79
+msgid "Calculator"
+msgstr "Калькулятор"
+
+#: templates/base.html:45 templates/base.html:80
+msgid "Settings"
+msgstr "Настройки"
+
+#: templates/base.html:46 templates/diary/day_details.html:55
+msgid "Entry"
+msgstr "Запись"
+
+#: templates/base.html:47
+msgid "Log out"
+msgstr "Выйти"
+
+#: templates/base.html:57
+msgid "Switch to Russian"
+msgstr "Переключить на русский"
+
+#: templates/base.html:60
+msgid "Switch to English"
+msgstr "Переключить на английский"
+
+#: templates/base.html:63
+msgid "Theme"
+msgstr "Тема"
+
+#: templates/base.html:63
+msgid "Toggle theme"
+msgstr "Переключить тему"
+
+#: templates/base.html:75
+msgid "Add entry"
+msgstr "Добавить запись"
+
+#: templates/core/calculator.html:3 templates/core/calculator.html:6
+msgid "BMR / TDEE calculator"
+msgstr "Калькулятор основного обмена и энергозатрат"
+
+#: templates/core/calculator.html:12
+msgid "Your details"
+msgstr "Ваши данные"
+
+#: templates/core/calculator.html:14
+msgid "BMR method"
+msgstr "Метод расчёта основного обмена"
+
+#: templates/core/calculator.html:25
+msgid "Age"
+msgstr "Возраст"
+
+#: templates/core/calculator.html:36
+msgid "Weight and goals"
+msgstr "Вес и цели"
+
+#: templates/core/calculator.html:62
+msgid "Calculate"
+msgstr "Рассчитать"
+
+#: templates/core/calculator.html:63
+msgid "Save to profile"
+msgstr "Сохранить в профиле"
+
+#: templates/core/calculator.html:69
+msgid "Results"
+msgstr "Результаты"
+
+#: templates/core/calculator.html:73 templates/core/dashboard.html:27
+msgid "Target"
+msgstr "Цель"
+
+#: templates/core/calculator.html:79
+msgid "Target intake (visualization)"
+msgstr "Целевая калорийность (визуализация)"
+
+#: templates/core/calculator.html:87
+msgid "Recommended macros:"
+msgstr "Рекомендуемое соотношение БЖУ:"
+
+#: templates/core/dashboard.html:5 templates/diary/add_entry.html:19
+#: templates/planner/planner.html:17
+msgid "Today"
+msgstr "Сегодня"
+
+#: templates/core/dashboard.html:8
+msgid "Calories — last 7 days"
+msgstr "Калории — последние 7 дней"
+
+#: templates/core/dashboard.html:12
+msgid "Macros — last 7 days"
+msgstr "БЖУ — последние 7 дней"
+
+#: templates/core/dashboard.html:16
+msgid "Targets"
+msgstr "Целевые значения"
+
+#: templates/core/dashboard.html:20
+msgid "Daily calorie target"
+msgstr "Дневная цель по калориям"
+
+#: templates/core/dashboard.html:21
+msgid "Estimated goal date"
+msgstr "Ориентировочная дата достижения цели"
+
+#: templates/core/dashboard.html:25
+msgid "Remaining today"
+msgstr "Осталось на сегодня"
+
+#: templates/core/dashboard.html:31
+msgid "Next week's recommendation"
+msgstr "Рекомендация на следующую неделю"
+
+#: templates/core/dashboard.html:33
+msgid "Adjust your target by"
+msgstr "Измените дневную цель на"
+
+#: templates/core/dashboard.html:33
+msgid "kcal/day based on your weight trend."
+msgstr "ккал в день с учётом динамики веса."
+
+#: templates/core/dashboard.html:35
+msgid "Not enough data yet — log your weight for a few days."
+msgstr "Пока недостаточно данных — записывайте вес несколько дней."
+
+#: templates/core/dashboard.html:39
+msgid "Weight trend"
+msgstr "Динамика веса"
+
+#: templates/core/dashboard.html:50 templates/diary/day_details.html:71
+#: templates/diary/day_details.html:128
+msgid "Weight"
+msgstr "Вес"
+
+#: templates/core/dashboard.html:51
+msgid "Trend (EWMA)"
+msgstr "Тренд (EWMA)"
+
+#: templates/core/dashboard.html:59
+msgid "Macro targets"
+msgstr "Целевые значения БЖУ"
+
+#: templates/core/dashboard.html:64
+msgid "Today's meals"
+msgstr "Приёмы пищи сегодня"
+
+#: templates/core/dashboard.html:66
+msgid "Food"
+msgstr "Еда"
+
+#: templates/core/dashboard.html:73
+msgid "No entries yet — add something to your"
+msgstr "Записей пока нет — добавьте что-нибудь в"
+
+#: templates/core/dashboard.html:73
+msgid "diary"
+msgstr "дневник"
+
+#: templates/core/dashboard.html:108 templates/diary/day_details.html:72
+#: templates/diary/day_details.html:129 templates/planner/planner.html:83
+#: templates/products/list.html:20
+msgid "Calories"
+msgstr "Калории"
+
+#: templates/core/home.html:3
+msgid "Home"
+msgstr "Главная"
+
+#: templates/core/home.html:6
+msgid "Track your nutrition. Reach your goals. Inspire your friends."
+msgstr "Следите за питанием. Достигайте целей. Вдохновляйте друзей."
+
+#: templates/core/home.html:7
+msgid "A simple yet powerful calorie tracker with a social feed."
+msgstr "Удобный и функциональный счётчик калорий с социальной лентой."
+
+#: templates/core/home.html:10
+msgid "Open dashboard"
+msgstr "Открыть панель управления"
+
+#: templates/core/home.html:12
+msgid "Get started for free"
+msgstr "Начать бесплатно"
+
+#: templates/core/home.html:13
+msgid "I already have an account"
+msgstr "У меня уже есть аккаунт"
+
+#: templates/core/home.html:19
+msgid "Progress charts"
+msgstr "Графики прогресса"
+
+#: templates/core/home.html:20
+msgid "Automatic TDEE/BMR calculations"
+msgstr "Автоматический расчёт основного обмена и энергозатрат"
+
+#: templates/core/home.html:21
+msgid "Food and recipe library"
+msgstr "Каталог продуктов и рецептов"
+
+#: templates/core/home.html:22
+msgid "Friends and reactions"
+msgstr "Друзья и реакции"
+
+#: templates/core/settings.html:3 templates/core/settings.html:6
+msgid "Profile settings"
+msgstr "Настройки профиля"
+
+#: templates/core/settings.html:13
+msgid "General information"
+msgstr "Общая информация"
+
+#: templates/core/settings.html:29
+msgid "Body measurements"
+msgstr "Параметры тела"
+
+#: templates/core/settings.html:51
+#, python-format
+msgid "Body fat (%%)"
+msgstr "Процент жира в организме (%%)"
+
+#: templates/core/settings.html:57
+msgid "Goals"
+msgstr "Цели"
+
+#: templates/core/settings.html:73
+msgid "Appearance"
+msgstr "Внешний вид"
+
+#: templates/core/settings.html:79 templates/diary/add_entry.html:79
+#: templates/products/form.html:9 templates/recipes/recipe_form.html:42
+msgid "Save"
+msgstr "Сохранить"
+
+#: templates/diary/add_entry.html:3
+msgid "Add diary entry"
+msgstr "Добавить запись в дневник"
+
+#: templates/diary/add_entry.html:20 templates/planner/planner.html:18
+msgid "Tomorrow"
+msgstr "Завтра"
+
+#: templates/diary/add_entry.html:31 templates/planner/planner.html:26
+msgid "Meal type"
+msgstr "Тип приёма пищи"
+
+#: templates/diary/add_entry.html:39 templates/planner/planner.html:37
+msgid "Category"
+msgstr "Категория"
+
+#: templates/diary/add_entry.html:41
+msgid "Select"
+msgstr "Выберите"
+
+#: templates/diary/add_entry.html:61
+msgid "Amount (g)"
+msgstr "Количество (г)"
+
+#: templates/diary/add_entry.html:68
+msgid "For recipes, enter servings or grams."
+msgstr "Для рецептов укажите количество порций или граммы."
+
+#: templates/diary/add_entry.html:71 templates/planner/planner.html:63
+msgid "Note (optional)"
+msgstr "Заметка (необязательно)"
+
+#: templates/diary/add_entry.html:72
+msgid "For example: after a workout"
+msgstr "Например: после тренировки"
+
+#: templates/diary/add_entry.html:75
+msgid "Preview:"
+msgstr "Предпросмотр:"
+
+#: templates/diary/add_entry.html:84 templates/planner/planner.html:108
+msgid "Back to diary"
+msgstr "Вернуться в дневник"
+
+#: templates/diary/add_entry.html:133
+msgid "Loading failed"
+msgstr "Не удалось загрузить данные"
+
+#: templates/diary/archive.html:5 templates/diary/archive.html:8
+msgid "Diary archive"
+msgstr "Архив дневника"
+
+#: templates/diary/archive.html:12
+msgid "Export month (CSV)"
+msgstr "Экспорт месяца (CSV)"
+
+#: templates/diary/archive.html:23
+msgid "Mon"
+msgstr "Пн"
+
+#: templates/diary/archive.html:24
+msgid "Tue"
+msgstr "Вт"
+
+#: templates/diary/archive.html:25
+msgid "Wed"
+msgstr "Ср"
+
+#: templates/diary/archive.html:26
+msgid "Thu"
+msgstr "Чт"
+
+#: templates/diary/archive.html:27
+msgid "Fri"
+msgstr "Пт"
+
+#: templates/diary/archive.html:28
+msgid "Sat"
+msgstr "Сб"
+
+#: templates/diary/archive.html:29
+msgid "Sun"
+msgstr "Вс"
+
+#: templates/diary/archive.html:48
+msgid "Planned for"
+msgstr "Запланировано на"
+
+#: templates/diary/archive.html:68
+msgid "Loading..."
+msgstr "Загрузка..."
+
+#: templates/diary/day_details.html:65
+msgid "Logged meals"
+msgstr "Записанные приёмы пищи"
+
+#: templates/diary/day_details.html:71
+msgid "Product / Recipe"
+msgstr "Продукт / рецепт"
+
+#: templates/diary/day_details.html:90 templates/products/list.html:73
+#: templates/recipes/recipe_form.html:19 templates/recipes/recipe_list.html:27
+msgid "Delete"
+msgstr "Удалить"
+
+#: templates/diary/day_details.html:97 templates/diary/day_details.html:156
+#: templates/recipes/recipe_form.html:39 templates/recipes/recipe_list.html:20
+msgid "Total"
+msgstr "Итого"
+
+#: templates/diary/day_details.html:108
+msgid "No entries for this day."
+msgstr "За этот день записей нет."
+
+#: templates/diary/day_details.html:120
+msgid "Plan for the day"
+msgstr "План на день"
+
+#: templates/diary/day_details.html:149
+msgid "Move to diary"
+msgstr "Перенести в дневник"
+
+#: templates/diary/day_details.html:167
+msgid "Nothing planned for this day."
+msgstr "На этот день ничего не запланировано."
+
+#: templates/planner/planner.html:4 templates/planner/planner.html:9
+msgid "Meal planner"
+msgstr "Планировщик питания"
+
+#: templates/planner/planner.html:34 templates/planner/planner.html:81
+msgid "Time"
+msgstr "Время"
+
+#: templates/planner/planner.html:43
+msgid "Select item"
+msgstr "Выберите продукт или рецепт"
+
+#: templates/planner/planner.html:57
+msgid "Grams"
+msgstr "Граммы"
+
+#: templates/planner/planner.html:64
+msgid "For example: before a workout"
+msgstr "Например: перед тренировкой"
+
+#: templates/planner/planner.html:72 templates/recipes/recipe_form.html:34
+msgid "Add"
+msgstr "Добавить"
+
+#: templates/planner/planner.html:76
+msgid "Planned meals"
+msgstr "Запланированные приёмы пищи"
+
+#: templates/planner/planner.html:152
+#, fuzzy
+#| msgid "Select a product"
+msgid "Select a date first."
+msgstr "Выберите продукт"
+
+#: templates/products/form.html:3 templates/products/form.html:5
+msgid "Edit product"
+msgstr "Редактировать продукт"
+
+#: templates/products/form.html:3 templates/products/form.html:5
+msgid "New product"
+msgstr "Новый продукт"
+
+#: templates/products/list.html:11
+msgid "Search products..."
+msgstr "Поиск продуктов..."
+
+#: templates/products/list.html:13
+msgid "All categories"
+msgstr "Все категории"
+
+#: templates/products/list.html:19
+msgid "Default sort"
+msgstr "Сортировка по умолчанию"
+
+#: templates/products/list.html:23 templates/products/list.html:50
+msgid "Carbohydrates"
+msgstr "Углеводы"
+
+#: templates/products/list.html:25 templates/recipes/recipe_list.html:9
+msgid "Search"
+msgstr "Поиск"
+
+#: templates/products/list.html:26
+msgid "Add product"
+msgstr "Добавить продукт"
+
+#: templates/products/list.html:31
+#, fuzzy
+#| msgid "Products"
+msgid "Product pages"
+msgstr "Продукты"
+
+#: templates/products/list.html:33 templates/social/feed.html:28
+msgid "Previous"
+msgstr "Назад"
+
+#: templates/products/list.html:35 templates/social/feed.html:30
+msgid "Page"
+msgstr "Страница"
+
+#: templates/products/list.html:35 templates/social/feed.html:30
+msgid "of"
+msgstr "из"
+
+#: templates/products/list.html:37 templates/social/feed.html:32
+msgid "Next"
+msgstr "Далее"
+
+#: templates/products/list.html:47
+msgid "kcal/100 g"
+msgstr "ккал/100 г"
+
+#: templates/products/list.html:51
+msgid "Tags"
+msgstr "Теги"
+
+#: templates/products/list.html:70 templates/recipes/recipe_list.html:24
+msgid "Edit"
+msgstr "Изменить"
+
+#: templates/products/list.html:73
+msgid "Delete this product?"
+msgstr "Удалить этот продукт?"
+
+#: templates/products/list.html:79
+msgid "No products found."
+msgstr "Продукты не найдены."
+
+#: templates/products/list.html:88
+#, fuzzy
+#| msgid "Move to diary"
+msgid "Product added to diary."
+msgstr "Перенести в дневник"
+
+#: templates/recipes/recipe_form.html:7 templates/recipes/recipe_list.html:10
+msgid "New recipe"
+msgstr "Новый рецепт"
+
+#: templates/recipes/recipe_form.html:15
+msgid "Ingredients"
+msgstr "Ингредиенты"
+
+#: templates/recipes/recipe_form.html:17
+msgid "g/piece"
+msgstr "г/шт."
+
+#: templates/recipes/recipe_form.html:20
+msgid "Select a product"
+msgstr "Выберите продукт"
+
+#: templates/recipes/recipe_form.html:21
+msgid "Enter an amount"
+msgstr "Укажите количество"
+
+#: templates/recipes/recipe_form.html:25
+msgid "Search for a product..."
+msgstr "Поиск продукта..."
+
+#: templates/recipes/recipe_form.html:27
+msgid "Amount"
+msgstr "Количество"
+
+#: templates/recipes/recipe_form.html:29
+msgid "g"
+msgstr "г"
+
+#: templates/recipes/recipe_form.html:30
+msgid "ml"
+msgstr "мл"
+
+#: templates/recipes/recipe_form.html:31
+msgid "pcs"
+msgstr "шт."
+
+#: templates/recipes/recipe_form.html:33
+msgid "Weight per piece (g)"
+msgstr "Вес одной штуки (г)"
+
+#: templates/recipes/recipe_list.html:5
+msgid "My recipes"
+msgstr "Мои рецепты"
+
+#: templates/recipes/recipe_list.html:8
+msgid "Name or tags"
+msgstr "Название или теги"
+
+#: templates/recipes/recipe_list.html:25
+msgid "Delete this recipe?"
+msgstr "Удалить этот рецепт?"
+
+#: templates/recipes/recipe_list.html:34
+msgid "No recipes yet."
+msgstr "Рецептов пока нет."
+
+#: templates/social/feed.html:5
+msgid "Community feed"
+msgstr "Лента сообщества"
+
+#: templates/social/feed.html:9
+msgid "Publish"
+msgstr "Опубликовать"
+
+#: templates/social/feed.html:22
+msgid "There are no posts from you or your friends yet."
+msgstr "У вас и ваших друзей пока нет публикаций."
+
+#: templates/social/feed.html:26
+msgid "Feed pages"
+msgstr "Страницы ленты"

@@ -1,11 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 from core.utils import bmr_mifflin, tdee, daily_target_kcal, age_from_birthdate
 
-SEX_CHOICES = [('male', 'Мужской'), ('female', 'Женский')]
-ACTIVITY_CHOICES = [('sedentary','Сидячий'),('light','Лёгкая'),('moderate','Средняя'),('active','Активная'),('very_active','Очень активная')]
-GOAL_CHOICES = [('lose','Сброс'),('maintain','Поддержание'),('gain','Набор')]
-THEME_CHOICES = [('auto','Авто'),('light','Светлая'),('dark','Тёмная')]
+SEX_CHOICES = [('male', _('Male')), ('female', _('Female'))]
+ACTIVITY_CHOICES = [
+    ('sedentary', _('Sedentary')),
+    ('light', _('Light')),
+    ('moderate', _('Moderate')),
+    ('active', _('Active')),
+    ('very_active', _('Very active')),
+]
+GOAL_CHOICES = [('lose', _('Lose weight')), ('maintain', _('Maintain weight')), ('gain', _('Gain weight'))]
+THEME_CHOICES = [('auto', _('Automatic')), ('light', _('Light')), ('dark', _('Dark'))]
 
 def avatar_upload_to(instance, filename):  # simple unique path
     return f'avatars/user_{instance.user_id}/{filename}'
@@ -27,7 +34,7 @@ class Profile(models.Model):
     neck_cm = models.FloatField(blank=True, null=True)
     waist_cm = models.FloatField(blank=True, null=True)
     hip_cm = models.FloatField(blank=True, null=True)
-    MACRO_MODE_CHOICES = [('default', 'Обычный'), ('athlete', 'Атлетический')]
+    MACRO_MODE_CHOICES = [('default', _('Standard')), ('athlete', _('Athlete'))]
     macro_mode = models.CharField(max_length=16, default='default')  # default|athlete
 
     activity_level = models.CharField(max_length=20, choices=ACTIVITY_CHOICES, default='light')

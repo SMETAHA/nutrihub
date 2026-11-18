@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
-{% block title %}Лента{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Feed" %}{% endblock %}
 {% block content %}
-<h2>Лента</h2>
+<h2>{% translate "Community feed" %}</h2>
 <form method="post" class="form-grid">
   {% csrf_token %}
   {{ form.as_p }}
-  <button class="btn btn-primary">Опубликовать</button>
+  <button class="btn btn-primary">{% translate "Publish" %}</button>
 </form>
 <div class="mt">
   {% for p in posts %}
@@ -18,17 +19,17 @@
     <a class="btn" href="/feed/react/{{ p.id }}/like">👍 {{ p.reactions.count }}</a>
   </div>
   {% empty %}
-  <p>У ваших друзей пока нет постов.</p>
+  <p>{% translate "There are no posts from you or your friends yet." %}</p>
   {% endfor %}
 </div>
 {% if posts.paginator.num_pages > 1 %}
-<nav class="pagination" aria-label="Страницы ленты">
+<nav class="pagination" aria-label="{% translate 'Feed pages' %}">
   {% if posts.has_previous %}
-    <a class="btn" href="?page={{ posts.previous_page_number }}">Назад</a>
+    <a class="btn" href="?page={{ posts.previous_page_number }}">{% translate "Previous" %}</a>
   {% endif %}
-  <span>Страница {{ posts.number }} из {{ posts.paginator.num_pages }}</span>
+  <span>{% translate "Page" %} {{ posts.number }} {% translate "of" %} {{ posts.paginator.num_pages }}</span>
   {% if posts.has_next %}
-    <a class="btn" href="?page={{ posts.next_page_number }}">Вперёд</a>
+    <a class="btn" href="?page={{ posts.next_page_number }}">{% translate "Next" %}</a>
   {% endif %}
 </nav>
 {% endif %}

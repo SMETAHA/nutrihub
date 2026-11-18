@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from .models import DiaryEntry, WeightLog
 
 class DiaryEntryForm(forms.ModelForm):
@@ -12,10 +13,12 @@ class DiaryEntryForm(forms.ModelForm):
             'servings': forms.NumberInput(attrs={'min': 0, 'step': '0.1'}),
         }
         labels = {
-            'time': 'Время приёма пищи',
-            'product': 'Продукт',
-            'recipe': 'Блюдо',
-            'grams': 'Вес (г)',
+            'time': _('Meal time'),
+            'product': _('Product'),
+            'recipe': _('Recipe'),
+            'grams': _('Weight (g)'),
+            'servings': _('Servings'),
+            'note': _('Note'),
         }
 
     def clean(self):
@@ -23,9 +26,9 @@ class DiaryEntryForm(forms.ModelForm):
         product = cleaned_data.get('product')
         recipe = cleaned_data.get('recipe')
         if not product and not recipe:
-            raise forms.ValidationError("Выберите либо продукт, либо блюдо.")
+            raise forms.ValidationError(_("Select either a product or a recipe."))
         if product and recipe:
-            raise forms.ValidationError("Нельзя выбрать и продукт, и блюдо одновременно.")
+            raise forms.ValidationError(_("Select a product or a recipe, not both."))
         return cleaned_data
 
 
@@ -38,6 +41,6 @@ class WeightLogForm(forms.ModelForm):
             'weight': forms.NumberInput(attrs={'step': '0.1', 'min': '0'}),
         }
         labels = {
-            'date': 'Дата',
-            'weight': 'Вес (кг)',
+            'date': _('Date'),
+            'weight': _('Weight (kg)'),
         }

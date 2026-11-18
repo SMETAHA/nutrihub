@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from .models import FoodProduct
 
 class ProductForm(forms.ModelForm):
@@ -11,18 +12,18 @@ class ProductForm(forms.ModelForm):
             'tags', 'is_public',
         )
         labels = {
-            'name': 'Название',
-            'brand': 'Бренд',
-            'calories_per_100g': 'Ккал на 100 г',
-            'protein_per_100g': 'Белки на 100 г',
-            'fat_per_100g': 'Жиры на 100 г',
-            'carbs_per_100g': 'Углеводы на 100 г',
-            'fiber_per_100g': 'Клетчатка на 100 г',
-            'sugar_per_100g': 'Сахар на 100 г',
-            'sodium_mg_per_100g': 'Натрий на 100 г, мг',
-            'potassium_mg_per_100g': 'Калий на 100 г, мг',
-            'tags': 'Теги через запятую',
-            'is_public': 'Публичный продукт',
+            'name': _('Name'),
+            'brand': _('Brand'),
+            'calories_per_100g': _('Calories per 100 g'),
+            'protein_per_100g': _('Protein per 100 g'),
+            'fat_per_100g': _('Fat per 100 g'),
+            'carbs_per_100g': _('Carbohydrates per 100 g'),
+            'fiber_per_100g': _('Fiber per 100 g'),
+            'sugar_per_100g': _('Sugar per 100 g'),
+            'sodium_mg_per_100g': _('Sodium per 100 g (mg)'),
+            'potassium_mg_per_100g': _('Potassium per 100 g (mg)'),
+            'tags': _('Tags (comma-separated)'),
+            'is_public': _('Public product'),
         }
         widgets = {
             field: forms.NumberInput(attrs={'min': 0, 'step': 0.1})

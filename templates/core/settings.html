@@ -1,81 +1,82 @@
 {% extends 'base.html' %}
-{% block title %}Настройки профиля{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Profile settings" %}{% endblock %}
 {% block content %}
 
-<h2>Настройки профиля</h2>
+<h2>{% translate "Profile settings" %}</h2>
 
 <form method="post" enctype="multipart/form-data" class="form-grid">
   {% csrf_token %}
 
   <!-- 🧍 Общая информация -->
   <div class="card">
-    <h3>Общая информация</h3>
-    <label>О себе</label>
+    <h3>{% translate "General information" %}</h3>
+    <label>{% translate "About you" %}</label>
     {{ form.bio }}
 
-    <label>Аватар</label>
+    <label>{% translate "Avatar" %}</label>
     {{ form.avatar }}
 
-    <label>Пол</label>
+    <label>{% translate "Sex" %}</label>
     {{ form.sex }}
 
-    <label>Дата рождения</label>
+    <label>{% translate "Date of birth" %}</label>
     {{ form.birth_date }}
   </div>
 
   <!-- ⚖️ Параметры тела -->
   <div class="card">
-    <h3>Параметры тела</h3>
-    <label>Рост (см)</label>
+    <h3>{% translate "Body measurements" %}</h3>
+    <label>{% translate "Height (cm)" %}</label>
     {{ form.height_cm }}
 
-    <label>Начальный вес (кг)</label>
+    <label>{% translate "Starting weight (kg)" %}</label>
     {{ form.start_weight_kg }}
 
-    <label>Текущий вес (кг)</label>
+    <label>{% translate "Current weight (kg)" %}</label>
     {{ form.current_weight_kg }}
 
-    <label>Целевой вес (кг)</label>
+    <label>{% translate "Target weight (kg)" %}</label>
     {{ form.target_weight_kg }}
 
-    <label>Талия (см)</label>
+    <label>{% translate "Waist (cm)" %}</label>
     {{ form.waist_cm }}
 
-    <label>Шея (см)</label>
+    <label>{% translate "Neck (cm)" %}</label>
     {{ form.neck_cm }}
 
-    <label>Бёдра (см)</label>
+    <label>{% translate "Hips (cm)" %}</label>
     {{ form.hip_cm }}
 
-    <label>Процент жира (%)</label>
+    <label>{% translate "Body fat (%)" %}</label>
     {{ form.body_fat_percent }}
   </div>
 
   <!-- 🎯 Цели -->
   <div class="card">
-    <h3>Цели</h3>
-    <label>Уровень активности</label>
+    <h3>{% translate "Goals" %}</h3>
+    <label>{% translate "Activity level" %}</label>
     {{ form.activity_level }}
 
-    <label>Тип цели</label>
+    <label>{% translate "Goal" %}</label>
     {{ form.goal_type }}
 
-    <label>Изменение в неделю (кг)</label>
+    <label>{% translate "Weekly change (kg)" %}</label>
     {{ form.weekly_delta_kg }}
 
-    <label>Режим макросов</label>
+    <label>{% translate "Macro mode" %}</label>
     {{ form.macro_mode }}
   </div>
 
   <!-- 🌓 Внешний вид -->
   <div class="card">
-    <h3>Внешний вид</h3>
-    <label>Тема интерфейса</label>
+    <h3>{% translate "Appearance" %}</h3>
+    <label>{% translate "Interface theme" %}</label>
     {{ form.theme }}
   </div>
 
   <div style="grid-column: 1 / -1; text-align: center; margin-top: 20px;">
-    <button class="btn btn-primary" type="submit">Сохранить</button>
+    <button class="btn btn-primary" type="submit">{% translate "Save" %}</button>
   </div>
 </form>
 

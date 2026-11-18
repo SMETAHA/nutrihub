@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Рецепты{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Recipes" %}{% endblock %}
 {% block content %}
-<h1>🧾 Мои рецепты</h1>
+<h1>🧾 {% translate "My recipes" %}</h1>
 
 <form method="get" class="row" style="gap:8px;margin:8px 0 16px;">
-  <input type="text" name="q" value="{{ q }}" placeholder="Название или теги">
-  <button class="btn">Искать</button>
-  <a class="btn-primary" href="{% url 'recipe_create' %}">+ Новый рецепт</a>
+  <input type="text" name="q" value="{{ q }}" placeholder="{% translate 'Name or tags' %}">
+  <button class="btn">{% translate "Search" %}</button>
+  <a class="btn-primary" href="{% url 'recipe_create' %}">+ {% translate "New recipe" %}</a>
 </form>
 
 {% if recipes %}
@@ -16,20 +17,20 @@
     <h3 style="margin:0 0 6px 0;">{{ r.name }}</h3>
     {% if r.tags %}<div class="text-muted" style="font-size:.9rem;">#{{ r.tags }}</div>{% endif %}
     <div class="mt">
-      <div><b>Итого:</b> {{ r.total_kcal|floatformat:0 }} ккал · Б {{ r.total_protein|floatformat:0 }} · Ж {{ r.total_fat|floatformat:0 }} · У {{ r.total_carbs|floatformat:0 }}</div>
-      <div class="text-muted">100 г: {{ r.per100_kcal|floatformat:0 }} ккал · Порций: {{ r.servings }}</div>
+      <div><b>{% translate "Total" %}:</b> {{ r.total_kcal|floatformat:0 }} kcal · P {{ r.total_protein|floatformat:0 }} · F {{ r.total_fat|floatformat:0 }} · C {{ r.total_carbs|floatformat:0 }}</div>
+      <div class="text-muted">100 g: {{ r.per100_kcal|floatformat:0 }} kcal · {% translate "Servings" %}: {{ r.servings }}</div>
     </div>
     <div class="row" style="gap:8px; margin-top:10px;">
-      <a class="btn" href="{% url 'recipe_edit' r.pk %}">✏️ Редактировать</a>
-      <form method="post" action="{% url 'recipe_delete' r.pk %}" onsubmit="return confirm('Удалить рецепт?')">
+      <a class="btn" href="{% url 'recipe_edit' r.pk %}">✏️ {% translate "Edit" %}</a>
+      <form method="post" action="{% url 'recipe_delete' r.pk %}" onsubmit="return confirm('{% translate "Delete this recipe?" %}')">
         {% csrf_token %}
-        <button class="btn">🗑️ Удалить</button>
+        <button class="btn">🗑️ {% translate "Delete" %}</button>
       </form>
     </div>
   </div>
   {% endfor %}
 </div>
 {% else %}
-<p>Пока нет рецептов.</p>
+<p>{% translate "No recipes yet." %}</p>
 {% endif %}
 {% endblock %}

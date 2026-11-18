@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
-{% block title %}Профиль{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Profile" %}{% endblock %}
 {% block content %}
 <div class="card">
   <h2>@{{ profile_user.username }}</h2>
   {% if profile and profile.avatar %}
-    <img src="{{ profile.avatar.url }}" alt="avatar" class="avatar">
+    <img src="{{ profile.avatar.url }}" alt="{% translate 'Profile avatar' %}" class="avatar">
   {% endif %}
   <p>{{ profile.bio }}</p>
   {% if profile_user != user %}
-    <a class="btn" href="/feed/add-friend/{{ profile_user.username }}/">Добавить в друзья</a>
+    <a class="btn" href="/feed/add-friend/{{ profile_user.username }}/">{% translate "Add friend" %}</a>
   {% endif %}
 </div>
 {% endblock %}

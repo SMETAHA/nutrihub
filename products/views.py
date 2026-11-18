@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.db.models.deletion import ProtectedError
 from django.core.paginator import Paginator
+from django.utils.translation import gettext as _
 
 
 def product_list(request):
@@ -112,7 +113,7 @@ def product_delete(request, pk):
     try:
         product.delete()
     except ProtectedError:
-        messages.error(request, 'Продукт используется в дневнике или рецептах и не может быть удалён.')
+        messages.error(request, _('This product is used in your diary or recipes and cannot be deleted.'))
         return redirect('product_list')
     return redirect('product_list')
 

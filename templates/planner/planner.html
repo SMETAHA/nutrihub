@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Планировщик{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Meal planner" %}{% endblock %}
 
 {% block content %}
 <h2 style="display:flex;align-items:center;gap:10px;">
   <button id="prev-day" class="btn">←</button>
-  Планировщик — <span id="planner-date-label" data-iso="{{ planner_date|date:'Y-m-d' }}">
+  {% translate "Meal planner" %} — <span id="planner-date-label" data-iso="{{ planner_date|date:'Y-m-d' }}">
     {{ planner_date|date:"d E Y" }}
   </span>
   <button id="next-day" class="btn">→</button>
@@ -13,72 +14,74 @@
 
 <div class="planner-toolbar" style="margin: 10px 0; display: flex; gap: 10px; flex-wrap: wrap;">
   <input type="date" id="planner-date-input" value="{{ planner_date|date:'Y-m-d' }}">
-  <button id="today-btn" class="btn pill">Сегодня</button>
-  <button id="tomorrow-btn" class="btn pill">Завтра</button>
+  <button id="today-btn" class="btn pill">{% translate "Today" %}</button>
+  <button id="tomorrow-btn" class="btn pill">{% translate "Tomorrow" %}</button>
 </div>
 
-<!-- ВАЖНО: action указывает на /diary/planner/add/ -->
 <form method="post" class="card" id="planner-form" action="{% url 'planner_add' %}">
   {% csrf_token %}
 
-  <!-- скрытая дата, которую читает planner_add -->
   <input type="hidden" id="form-date" name="date" value="{{ planner_date|date:'Y-m-d' }}">
 
-  <label>Тип приёма</label>
+  <label>{% translate "Meal type" %}</label>
   <select name="meal_type" required>
-    <option value="breakfast">Завтрак</option>
-    <option value="lunch">Обед</option>
-    <option value="dinner">Ужин</option>
-    <option value="snack">Перекус</option>
+    <option value="breakfast">{% translate "Breakfast" %}</option>
+    <option value="lunch">{% translate "Lunch" %}</option>
+    <option value="dinner">{% translate "Dinner" %}</option>
+    <option value="snack">{% translate "Snack" %}</option>
   </select>
 
-  <label>⏰ Время</label>
+  <label>⏰ {% translate "Time" %}</label>
   <input type="time" name="time" value="12:00" required>
 
-  <label>Категория</label>
+  <label>{% translate "Category" %}</label>
   <select name="category" id="category-select" required>
-    <option value="product" selected>Продукт</option>
-    <option value="recipe">Блюдо</option>
+    <option value="product" selected>{% translate "Product" %}</option>
+    <option value="recipe">{% translate "Recipe" %}</option>
   </select>
 
-  <label>Выбор</label>
+  <label>{% translate "Select item" %}</label>
   <select name="item_id" id="item-select" required>
-    <optgroup label="Продукты" id="group-products">
+    <optgroup label="{% translate 'Products' %}" id="group-products">
       {% for p in products %}
       <option value="{{ p.id }}" data-type="product">{{ p.name }}</option>
       {% endfor %}
     </optgroup>
-    <optgroup label="Рецепты" id="group-recipes" style="display:none;">
+    <optgroup label="{% translate 'Recipes' %}" id="group-recipes" style="display:none;">
       {% for r in recipes %}
       <option value="{{ r.id }}" data-type="recipe">{{ r.name }}</option>
       {% endfor %}
     </optgroup>
   </select>
 
-  <label>Граммы</label>
+  <label>{% translate "Grams" %}</label>
   <input type="number" name="grams" id="grams" min="0" step="1" placeholder="0">
 
-  <label>Порции</label>
+  <label>{% translate "Servings" %}</label>
   <input type="number" name="servings" id="servings" min="0" step="0.1" placeholder="0">
 
-  <label>Заметка (опционально)</label>
-  <input type="text" name="note" placeholder="Например: перед тренировкой">
+  <label>{% translate "Note (optional)" %}</label>
+  <input type="text" name="note" placeholder="{% translate 'For example: before a workout' %}">
 
   <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px;">
-    <span id="preview-calories">0 ккал • Б 0 • Ж 0 • У 0</span>
-    <button type="submit" class="btn pill">+ Добавить</button>
+    <span id="preview-calories"
+          data-kcal-label="{% translate 'kcal' %}"
+          data-protein-label="{% translate 'Protein' %}"
+          data-fat-label="{% translate 'Fat' %}"
+          data-carbs-label="{% translate 'Carbs' %}">0 {% translate "kcal" %} • {% translate "Protein" %} 0 • {% translate "Fat" %} 0 • {% translate "Carbs" %} 0</span>
+    <button type="submit" class="btn pill">+ {% translate "Add" %}</button>
   </div>
 </form>
 
-<h3 style="margin-top: 20px;">Запланированные приёмы</h3>
+<h3 style="margin-top: 20px;">{% translate "Planned meals" %}</h3>
 <table class="diary-table">
   <thead>
     <tr>
       <th>✔</th>
-      <th>Время</th>
-      <th>Название</th>
-      <th>Ккал</th>
-      <th>Заметка</th>
+      <th>{% translate "Time" %}</th>
+      <th>{% translate "Name" %}</th>
+      <th>{% translate "Calories" %}</th>
+      <th>{% translate "Note" %}</th>
     </tr>
   </thead>
   <tbody>
@@ -96,13 +99,13 @@
         </tr>
       {% endfor %}
     {% else %}
-      <tr><td colspan="5" style="text-align:center;">Нет запланированных приёмов</td></tr>
+      <tr><td colspan="5" style="text-align:center;">{% translate "No meals planned yet." %}</td></tr>
     {% endif %}
   </tbody>
 </table>
 
 <div style="margin-top: 20px; display:flex; justify-content:center;">
-  <a href="/diary/?date={{ planner_date|date:'Y-m-d' }}" class="btn pill">← Вернуться в дневник</a>
+  <a href="/diary/?date={{ planner_date|date:'Y-m-d' }}" class="btn pill">← {% translate "Back to diary" %}</a>
 </div>
 
 <script>
@@ -146,7 +149,7 @@
     const currentIso = dateLabel.dataset.iso;
     if (!currentIso) {
       e.preventDefault();
-      alert('Дата не выбрана!');
+      alert('{% translate "Select a date first." %}');
       return;
     }
     formDate.value = currentIso;
@@ -192,7 +195,8 @@
       const res = await fetch(`/diary/api/preview/?category=${category}&item_id=${item}&grams=${g}&servings=${s}`);
       if (!res.ok) throw 0;
       const d = await res.json();
-      preview.textContent = `${d.kcal} ккал • Б ${d.protein} • Ж ${d.fat} • У ${d.carbs}`;
+      const labels = preview.dataset;
+      preview.textContent = `${d.kcal} ${labels.kcalLabel} • ${labels.proteinLabel} ${d.protein} • ${labels.fatLabel} ${d.fat} • ${labels.carbsLabel} ${d.carbs}`;
     } catch {
       preview.textContent = '—';
     }

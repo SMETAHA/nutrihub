@@ -1,5 +1,6 @@
 const themeSelect = document.querySelector('select[name="theme"]');
 const htmlEl = document.documentElement;
+const messages = document.body.dataset;
 
 // Загружаем сохранённую тему
 const savedTheme = localStorage.getItem('theme');
@@ -57,7 +58,7 @@ document.addEventListener('click', async (e) => {
   e.preventDefault();
   const url = btn.dataset.url || `/diary/api/delete/${btn.dataset.id}/`;
 
-  if (!confirm('Удалить запись?')) return;
+  if (!confirm(messages.deleteEntryConfirm)) return;
 
   try {
     const res = await fetch(url, {
@@ -84,7 +85,7 @@ document.addEventListener('click', async (e) => {
     }
   } catch (err) {
     console.error(err);
-    alert('Ошибка при удалении записи.');
+    alert(messages.deleteEntryError);
   }
 });
 // ==============================
@@ -137,7 +138,7 @@ document.addEventListener('click', async (e) => {
     const input = row.querySelector('.ing-search-input');
     if (input) input.value = product.name + (product.brand ? ` (${product.brand})` : '');
     const hint = row.querySelector('.ing-hint');
-    if (hint) hint.textContent = `100 г: ${Math.round(product.kcal||0)} ккал • Б ${product.p||0} • Ж ${product.f||0} • У ${product.c||0}`;
+    if (hint) hint.textContent = `${messages.per100gLabel}: ${Math.round(product.kcal||0)} ${messages.kcalLabel} • ${messages.proteinLabel} ${product.p||0} • ${messages.fatLabel} ${product.f||0} • ${messages.carbsLabel} ${product.c||0}`;
     const box = row.querySelector('.ing-results'); if (box) { box.innerHTML=''; box.style.display='none'; }
     previewTotals(); // сразу пересчёт
   }
@@ -360,7 +361,7 @@ function checkPlannerEmpty() {
     if (!document.querySelector(`#${msgId}`)) {
       const msg = document.createElement('p');
       msg.id = msgId;
-      msg.textContent = '📭 Нет запланированных приёмов';
+      msg.textContent = `📭 ${messages.noPlannedMeals}`;
       plannerTable.parentNode.appendChild(msg);
     }
   } else {

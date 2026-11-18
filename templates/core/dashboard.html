@@ -1,41 +1,42 @@
 {% extends 'base.html' %}
-{% block title %}Личный кабинет{% endblock %}
+{% load i18n %}
+{% block title %}{% translate "Dashboard" %}{% endblock %}
 {% block content %}
-<h2>Сегодня</h2>
+<h2>{% translate "Today" %}</h2>
 <div class="cards-grid">
   <div class="card">
-    <h3>Калории за 7 дней</h3>
+    <h3>{% translate "Calories — last 7 days" %}</h3>
     <canvas id="kcalChart"></canvas>
   </div>
   <div class="card">
-    <h3>БЖУ за 7 дней</h3>
+    <h3>{% translate "Macros — last 7 days" %}</h3>
     <canvas id="macroChart"></canvas>
   </div>
   <div class="card">
-    <h3>Нормы</h3>
+    <h3>{% translate "Targets" %}</h3>
     <ul>
       <li>BMR: {{ bmr|default:'—' }}</li>
       <li>TDEE: {{ tdee_val|default:'—' }}</li>
-      <li>Цель ккал/день: {{ target_kcal|default:'—' }}</li>
-      <li>Оценка достижения цели: {{ goal_eta|date:"d.m.Y" }}</li>
+      <li>{% translate "Daily calorie target" %}: {{ target_kcal|default:'—' }}</li>
+      <li>{% translate "Estimated goal date" %}: {{ goal_eta|date:"d.m.Y" }}</li>
     </ul>
   </div>
 <div class="card">
-  <h3>Осталось сегодня</h3>
+  <h3>{% translate "Remaining today" %}</h3>
   <div class="gauge" data-kcal-left="{{ left_kcal|default:0 }}" data-target="{{ target_kcal|default:0 }}"></div>
-  <p class="muted">Цель: {{ target_kcal|floatformat:0 }} ккал</p>
+  <p class="muted">{% translate "Target" %}: {{ target_kcal|floatformat:0 }} kcal</p>
 </div>
 
 <div class="card">
-  <h3>Рекомендация на след. неделю</h3>
+  <h3>{% translate "Next week's recommendation" %}</h3>
   {% if kcal_adjust_next_week %}
-    <p>Сместить цель на <b>{{ kcal_adjust_next_week }}</b> ккал/день (на основе тренда веса).</p>
+    <p>{% translate "Adjust your target by" %} <b>{{ kcal_adjust_next_week }}</b> {% translate "kcal/day based on your weight trend." %}</p>
   {% else %}
-    <p>Данных пока маловато — внеси вес за несколько дней.</p>
+    <p>{% translate "Not enough data yet — log your weight for a few days." %}</p>
   {% endif %}
 </div>
 <div class="card">
-  <h3>Вес (тренд)</h3>
+  <h3>{% translate "Weight trend" %}</h3>
   <canvas id="weightChart"></canvas>
 </div>
 
@@ -46,8 +47,8 @@ new Chart(wCtx, {
   data: {
     labels: {{ w_dates|safe }},
     datasets: [
-      { label:'Вес', data: {{ w_vals|safe }}, tension: 0.2 },
-      { label:'Тренд (EWMA)', data: {{ w_trend|safe }}, borderDash:[6,4], tension: 0.2 }
+      { label:'{% translate "Weight" %}', data: {{ w_vals|safe }}, tension: 0.2 },
+      { label:'{% translate "Trend (EWMA)" %}', data: {{ w_trend|safe }}, borderDash:[6,4], tension: 0.2 }
     ]
   },
   options: { responsive: true, animation: { duration: 500 } }
@@ -55,21 +56,21 @@ new Chart(wCtx, {
 </script>
 
 <div class="card">
-  <h3>Распределение БЖУ (цель)</h3>
+  <h3>{% translate "Macro targets" %}</h3>
   <canvas id="macroPie"></canvas>
 </div>
 
   <div class="card">
-    <h3>Сегодняшние приёмы</h3>
+    <h3>{% translate "Today's meals" %}</h3>
     <table>
-      <tr><th>Продукт</th><th>г</th><th>Ккал</th><th>Б</th><th>Ж</th><th>У</th></tr>
+      <tr><th>{% translate "Food" %}</th><th>g</th><th>kcal</th><th>P</th><th>F</th><th>C</th></tr>
       {% for e in today_entries %}
       <tr>
         <td>{{ e.product.name }}</td><td>{{ e.grams }}</td>
         <td>{{ e.total_kcal }}</td><td>{{ e.total_protein }}</td><td>{{ e.total_fat }}</td><td>{{ e.total_carbs }}</td>
       </tr>
       {% empty %}
-      <tr><td colspan="6">Нет записей — добавьте в <a href="/diary/">Дневнике</a>.</td></tr>
+      <tr><td colspan="6">{% translate "No entries yet — add something to your" %} <a href="/diary/">{% translate "diary" %}</a>.</td></tr>
       {% endfor %}
     </table>
   </div>
@@ -80,7 +81,7 @@ fetch('/dashboard/macro-target/')  // сделаем мини-эндпоинт �
   .then(r => r.json())
   .then(m => new Chart(macroPie, {
     type: 'pie',
-    data: { labels: ['Белки','Жиры','Угли'], datasets: [{ data: [m.protein_g*4, m.fat_g*9, m.carbs_g*4] }] },
+    data: { labels: ['{% translate "Protein" %}','{% translate "Fat" %}','{% translate "Carbs" %}'], datasets: [{ data: [m.protein_g*4, m.fat_g*9, m.carbs_g*4] }] },
     options: { responsive: true, animation: { duration: 400 } }
   }));
 
@@ -104,7 +105,7 @@ const carbsVals = {{ carbs_vals|safe }};
 const kc = document.getElementById('kcalChart').getContext('2d');
 new Chart(kc, {
   type: 'line',
-  data: { labels, datasets: [{ label: 'Ккал', data: kcalVals }] },
+  data: { labels, datasets: [{ label: '{% translate "Calories" %}', data: kcalVals }] },
   options: { responsive: true, animation: { duration: 500 } }
 });
 
@@ -112,9 +113,9 @@ const mc = document.getElementById('macroChart').getContext('2d');
 new Chart(mc, {
   type: 'bar',
   data: { labels, datasets: [
-    { label: 'Б', data: proteinVals },
-    { label: 'Ж', data: fatVals },
-    { label: 'У', data: carbsVals },
+    { label: '{% translate "Protein" %}', data: proteinVals },
+    { label: '{% translate "Fat" %}', data: fatVals },
+    { label: '{% translate "Carbs" %}', data: carbsVals },
   ]},
   options: { responsive: true, animation: { duration: 500 }, stacked: false }
 });

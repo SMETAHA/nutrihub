@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <link rel="stylesheet" href="{% static 'css/diary.css' %}">
 
 <style>
@@ -51,8 +52,8 @@
   </div>
 
   <div class="modal-actions" style="display:flex;gap:8px;">
-    <a href="/diary/add/?date={{ day|date:'Y-m-d' }}" class="btn pill">➕ Запись</a>
-    <a href="/diary/planner/?date={{ day|date:'Y-m-d' }}" class="btn pill">📋 Планировщик</a>
+    <a href="/diary/add/?date={{ day|date:'Y-m-d' }}" class="btn pill">➕ {% translate "Entry" %}</a>
+    <a href="/diary/planner/?date={{ day|date:'Y-m-d' }}" class="btn pill">📋 {% translate "Planner" %}</a>
   </div>
 </div>
 
@@ -61,14 +62,14 @@
 
   <!-- 🥗 Фактические приёмы -->
   <div class="scroll-section">
-    <h3>Фактические приёмы</h3>
+    <h3>{% translate "Logged meals" %}</h3>
     {% if entries %}
     <div class="diary-table-wrapper">
       <table class="diary-table">
         <thead>
           <tr>
-            <th>⏰</th><th>🍽️ Продукт / Блюдо</th><th>Вес</th>
-            <th>Ккал</th><th>Б</th><th>Ж</th><th>У</th><th></th>
+            <th>⏰</th><th>🍽️ {% translate "Product / Recipe" %}</th><th>{% translate "Weight" %}</th>
+            <th>{% translate "Calories" %}</th><th>P</th><th>F</th><th>C</th><th></th>
           </tr>
         </thead>
         <tbody>
@@ -86,14 +87,14 @@
                       class="js-diary-delete"
                       data-id="{{ e.id }}"
                       data-url="{% url 'delete_diary_entry_api' e.id %}"
-                      title="Удалить">🗑️</button>
+                      title="{% translate 'Delete' %}">🗑️</button>
             </td>
           </tr>
           {% endfor %}
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="3"><strong>Итого</strong></td>
+            <td colspan="3"><strong>{% translate "Total" %}</strong></td>
             <td><strong>{{ totals.kcal|floatformat:0 }}</strong></td>
             <td><strong>{{ totals.p|floatformat:0 }}</strong></td>
             <td><strong>{{ totals.f|floatformat:0 }}</strong></td>
@@ -104,7 +105,7 @@
       </table>
     </div>
     {% else %}
-      <p class="no-entries">📭 Записей за этот день нет.</p>
+      <p class="no-entries">📭 {% translate "No entries for this day." %}</p>
     {% endif %}
 
     <div class="export-buttons" style="margin-top:12px;display:flex;gap:8px;">
@@ -116,16 +117,16 @@
 
   <!-- 📝 План на день -->
   <div class="scroll-section">
-    <h3>План на день</h3>
+    <h3>{% translate "Plan for the day" %}</h3>
 
     <!-- ✅ теперь таблица всегда рендерится -->
     <table class="planner-table" {% if not planned_meals %}style="display:none"{% endif %}>
       <thead>
         <tr>
           <th>⏰</th>
-          <th>🍽 Название</th>
-          <th>Вес</th>
-          <th>Ккал</th>
+          <th>🍽 {% translate "Name" %}</th>
+          <th>{% translate "Weight" %}</th>
+          <th>{% translate "Calories" %}</th>
           <th>Б</th>
           <th>Ж</th>
           <th>У</th>
@@ -145,14 +146,14 @@
           <td>
             <button class="js-planner-transfer"
               data-url="{% url 'planner_transfer' pm.id %}"
-              title="Перенести в дневник">⬇</button>
+              title="{% translate 'Move to diary' %}">⬇</button>
           </td>
         </tr>
         {% endfor %}
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="3" class="totals-label">Итого</td>
+          <td colspan="3" class="totals-label">{% translate "Total" %}</td>
           <td><strong>{{ planned_totals.kcal|floatformat:0 }}</strong></td>
           <td><strong>{{ planned_totals.p|floatformat:0 }}</strong></td>
           <td><strong>{{ planned_totals.f|floatformat:0 }}</strong></td>
@@ -163,7 +164,7 @@
     </table>
 
     {% if not planned_meals %}
-    <p id="planner-empty-msg" class="muted">📅 Планов на этот день нет.</p>
+    <p id="planner-empty-msg" class="muted">📅 {% translate "Nothing planned for this day." %}</p>
     {% endif %}
   </div>
 
